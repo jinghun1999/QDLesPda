@@ -1,6 +1,6 @@
 # HX SgmwLes PDA🎮😊
-## 上汽通用五菱河西基地物流项目PDA前端源码库
-本工程采用Ionic 3脚手架和控件库开发，内容包含河西基地物流项目pda操作功能。
+## 上汽通用五菱青岛基地物流项目PDA前端源码库
+本工程采用Ionic 3脚手架和控件库开发，内容包含青岛基地物流项目pda操作功能。
 如需要参与开发，请先clone代码，具体命令详情请参考
 [Ionic3命令集合](https://ionicframework.com/docs/v3/cli/commands.html)
 ## How to start
@@ -22,7 +22,7 @@ ionic cordova build android --release
 ### Apk签名
 
 ```Bash
-jarsigner -verbose -keystore sgmwles.keystore -signedjar D:\Work\GitHub\SgmwLes\platforms\android\app\build\outputs\apk\release\smgwles.release.apk D:\Work\GitHub\SgmwLes\platforms\android\app\build\outputs\apk\release\app-release-unsigned.apk sgmwles.keystore
+jarsigner -verbose -keystore sgmwles.keystore -signedjar D:\Work\GitHub\QDLesPda\platforms\android\app\build\outputs\apk\release\smgwles.release.apk D:\Work\GitHub\QDLesPda\platforms\android\app\build\outputs\apk\release\app-release-unsigned.apk sgmwles.keystore
 ```
 
 ### DEV Preview
