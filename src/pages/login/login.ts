@@ -45,7 +45,7 @@ export class LoginPage extends BaseUI {
       {
         "id":2,
         "text":"测试环境",
-        "value":'http://10.1.126.171/lesapi'
+        "value":'http://10.1.126.171/qdapi'
       },
       {
         "id":3,
@@ -59,7 +59,6 @@ export class LoginPage extends BaseUI {
       }
     ];    
     this.gender = this.environment.find((e) => e.id == 2).value;
-    //localStorage.setItem('env', this.gender); 
     // this.api.getRequest().subscribe(data => { 
     //   console.log(data);
     // }, error => { 
@@ -96,7 +95,8 @@ export class LoginPage extends BaseUI {
       super.showToast(this.toastCtrl, '请输入用户名密码');
       this.setFocus();
       return;
-    }    
+    } 
+    
     setTimeout(this.changWS(),100);
     let loading = super.showLoading(this.loadingCtrl, "登录中...");
     this.user.login(this.account).subscribe((resp) => {

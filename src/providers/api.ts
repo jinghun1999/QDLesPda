@@ -9,16 +9,16 @@ import { Storage } from "@ionic/storage";
  */
 @Injectable()
 export class Api {
-  public plant: string = '1000';
+  public plant: string = '700';
   public version: string = 'P-201030';
   
   //public api_host: string = 'http://localhost:49280';
   //public api_host: string = 'http://127.0.0.1:49280';
   //public api_host: string = 'http://localhost/lesapi';
-  //public api_host: string = 'http://10.1.126.171/lesapi';
+  //public api_host: string = 'http://10.1.126.171/qdapi';
   //public api_host: string ='http://localhost:49280';
   //public api_host: string = 'http://10.34.243.14/lesapi';
-  //url: string = localStorage.getItem('env')+'/api';
+  //url: string = this.api_host+'/api';
 
   constructor(public http: HttpClient, public events: Events, public alertCtrl: AlertController, public toastCtrl: ToastController, public storage: Storage) { 
   }

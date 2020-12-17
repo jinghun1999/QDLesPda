@@ -24,7 +24,7 @@ export class HomePage extends BaseUI {
   workshop: string;
   username: string;
   version: string;
-  
+
   constructor(
     public navCtrl: NavController,
     public items: Menus,
@@ -49,7 +49,7 @@ export class HomePage extends BaseUI {
   /**
    * The view loaded, let's query our items for the list
    */
-  ionViewDidLoad() {   
+  ionViewDidLoad() {
     this.getWorkshop();
   }
   getWorkshop = () => {
@@ -120,19 +120,230 @@ export class HomePage extends BaseUI {
 
   logout() {
     this.user.logout().subscribe((re) => {
-        setTimeout(() => {
-          this.app.getRootNav().setRoot(
-            "LoginPage", {},
-            {
-              animate: true,
-              direction: "forward",
-            }
-          );
-        });
-      },
+      setTimeout(() => {
+        this.app.getRootNav().setRoot(
+          "LoginPage", {},
+          {
+            animate: true,
+            direction: "forward",
+          }
+        );
+      });
+    },
       (r) => {
         alert("注销失败");
       }
     );
+  }
+  returePlans() {
+    return [
+      {
+        "value": "BD1",
+        "text": "BD1(东部车身生产线)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "BD2",
+        "text": "BD2(西部车身生产线)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "GA1-C",
+        "text": "GA1-C(东部总装C线)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "GA1-D",
+        "text": "GA1-D(东部总装D线)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "GA2-B",
+        "text": "GA2-B(西部总装B线)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "GA2-C",
+        "text": "GA2-C(西部总装C线)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "LOC1",
+        "text": "LOC1(河西基地集配中心)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "LOC2",
+        "text": "LOC2(河西基地集配中心2)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "LTX",
+        "text": "LTX(河西基地轮胎线)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "LTX1",
+        "text": "LTX1(轮胎线虚拟车间)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "MC02",
+        "text": "MC02(西总C线线旁缓冲库)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "MC04",
+        "text": "MC04(西部总装缓冲区)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "MC05",
+        "text": "MC05(北库)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "MC07",
+        "text": "MC07(东部总装C线缓冲区)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "MC08",
+        "text": "MC08(轮胎库房（老B线）)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "MC10",
+        "text": "MC10(厂外RDC库)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "MC12",
+        "text": "MC12(东总D线缓冲区)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "MC13",
+        "text": "MC13(东部车身缓冲区)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "MC14",
+        "text": "MC14(西部库房)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "MC15",
+        "text": "MC15(西部车身缓冲区)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "MP01",
+        "text": "MP01(河西工业园喷涂车间原材料库)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "MP02",
+        "text": "MP02(河西工业园喷涂车间线边库)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "MP03",
+        "text": "MP03(河西工业园喷涂车间成品库)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "PUL1",
+        "text": "PUL1(保险杠生产线)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "WK01",
+        "text": "WK01(外库-车身件)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      },
+      {
+        "value": "WPP1",
+        "text": "WPP1(涂装成品库)",
+        "data1": null,
+        "data2": null,
+        "isSelect": false,
+        "children": null
+      }];
   }
 }
