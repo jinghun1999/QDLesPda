@@ -32,10 +32,13 @@ export class SettingsPage extends BaseUI {
 
   ionViewDidLoad() {
     this.data.plant = this.api.plant;
-
-    this.storage.get('WORKSHOP').then((val)=>{
+    this.storage.get('WORKSHOP').then((val) => {
       this.data.workshop = val;
-    })
+    });
+    
+    this.storage.get('store_area').then((val) => {
+      this.data.store_area = val;
+    });
   }
 
   ionViewWillEnter() {
@@ -49,13 +52,22 @@ export class SettingsPage extends BaseUI {
   change(){
     let addModal = this.modalCtrl.create('SetProfilePage',{}, );
     addModal.onDidDismiss(ds => {
-      if (ds) {
+      if (ds) {       
         this.data.workshop = ds;
+        this.changeArea(ds);
       }
     })
     addModal.present();
   }
-
+  changeArea(workshop){
+    let addModal = this.modalCtrl.create('SetStorageAreaPage',{workshop:workshop}, );
+    addModal.onDidDismiss(ds => {
+      if (ds) {       
+        this.data.store_area = ds;
+      }
+    })
+    addModal.present();
+  }
   logout() {
     this.user.logout().subscribe((re) => {
       setTimeout(() => {

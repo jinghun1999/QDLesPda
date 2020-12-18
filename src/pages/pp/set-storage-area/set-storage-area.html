@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>设置工厂仓库</ion-title>
+    <ion-title>设置工厂存储区</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -19,15 +19,20 @@
       <ion-note item-end>{{plant}}</ion-note>
     </ion-item>
   </ion-list>
-  <h3 padding-left>选择默认仓库</h3>
-  <ion-list radio-group [(ngModel)]="workshop">
-    <ion-item *ngFor="let item of workshop_choose">
+  <ion-list>
+    <ion-item>
+      <ion-label>仓库</ion-label>
+      <ion-note item-end>{{workshop}}</ion-note>
+    </ion-item>
+  </ion-list>
+  <h3 padding-left>选择默认存储区</h3>
+  <ion-list radio-group [(ngModel)]="store_area">
+    <ion-item *ngFor="let item of store_area_choose">
       <ion-label>{{item.text}}</ion-label>
       <ion-radio value="{{item.value}}"></ion-radio>
     </ion-item>
   </ion-list>
 </ion-content>
-
 <ion-footer>
   <ion-row>
     <ion-col no-padding hidden>

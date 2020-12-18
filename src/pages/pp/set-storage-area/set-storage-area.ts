@@ -1,30 +1,31 @@
-import { Component } from '@angular/core';
-import {IonicPage, LoadingController, NavController, NavParams, ToastController, ViewController} from 'ionic-angular';
-import {Storage} from "@ionic/storage";
-import {BaseUI} from "../";
-import {Api} from "../../providers";
+import { Component, NgZone, ViewChild } from '@angular/core';
+import {
+  IonicPage,
+  LoadingController,
+  NavParams,
+  ToastController,
+  NavController,
+  AlertController,
+  ModalController,
+  ViewController
+} from 'ionic-angular';
+import { Api } from '../../../providers';
+import { BaseUI } from '../../baseUI';
+import { fromEvent } from "rxjs/observable/fromEvent";
+import { Storage } from "@ionic/storage";
 
-/**
- * Generated class for the SetProfilePage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
-  selector: 'page-set-profile',
-  templateUrl: 'set-profile.html',
+  selector: 'page-set-storage-area',
+  templateUrl: 'set-storage-area.html',
 })
-export class SetProfilePage extends BaseUI {
+export class SetStorageAreaPage extends BaseUI {
   list: any[];
-
-  //plant_choose: any[];
-  workshop_choose: any[];
-
-  //plantid: string;
+  store_area_choose: any[];
   plant: any;
   workshop: any;
+  store_area: any;
   constructor(public navCtrl: NavController, public navParams: NavParams,
               private storage: Storage,
               public toastCtrl: ToastController,
@@ -32,6 +33,7 @@ export class SetProfilePage extends BaseUI {
               public viewCtrl: ViewController,
               public api: Api) {
     super();
+    this.workshop = this.navParams.get('workshop');
   }
 
   ionViewDidLoad() {
@@ -39,18 +41,13 @@ export class SetProfilePage extends BaseUI {
     this.plant = this.api.plant;
     let loading = super.showLoading(this.loadingCtrl,"正在加载数据...");
     setTimeout(()=> {
-      this.api.get('system/getPlants', {plant: this.plant, type: -1}).subscribe((res: any) => {
+      // 正确的写法 this.api.get('system/getAreas', { plant: this.api.plant,workshop:this.workshop, type: -1 }).subscribe((res: any) => { 
+        this.api.get('system/getPlants', {plant: this.plant, type: -1}).subscribe((res: any) => { //测试写法
           loading.dismiss();
         if (res.successful) {
           res.data = this.returnS();  //模拟数据
             this.list = res.data;
-           
-            //this.plant_choose = res.data;
-            //this.plant = res.data[0].value;
-
-            this.workshop_choose = res.data;//res.data[0].children;
-            //this.workshop = res.data[0].children[0].value;
-
+            this.store_area_choose = res.data;
             this.getConfig();
           } else {
             super.showToast(this.toastCtrl, res.message);
@@ -64,20 +61,19 @@ export class SetProfilePage extends BaseUI {
    }
 
   getConfig() {
-    this.storage.get('WORKSHOP').then(res => {
+    this.storage.get('store_area').then(res => {
       if (res) {
-        this.workshop = res;//JSON.parse(res);
+        this.store_area = res;//JSON.parse(res);
       }
     }).catch(e => console.error(e.toString()));
   }
-
   plantSelect(){
 
   }
 
   save(){
-    this.storage.set('WORKSHOP', this.workshop).then((res)=>{
-      this.viewCtrl.dismiss(this.workshop);
+    this.storage.set('store_area', this.store_area).then((res)=>{
+      this.viewCtrl.dismiss(this.store_area);
     }).catch(() => { });
   }
   cancel() {
@@ -86,15 +82,15 @@ export class SetProfilePage extends BaseUI {
   returnS() { 
     return [
       {
-        "value": "BD1",
-        "text": "BD1(东部车身生产线)",
+        "value": "TX1",
+        "text": "TX1(东部车身存储区)",
         "data1": null,
         "data2": null,
         "children": null
       },
       {
-        "value": "BD2",
-        "text": "BD2(西部车身生产线)",
+        "value": "LT1",
+        "text": "LT1(西部车身存储区)",
         "data1": null,
         "data2": null,
         "children": null
@@ -102,3 +98,4 @@ export class SetProfilePage extends BaseUI {
     ]
   }
 }
+

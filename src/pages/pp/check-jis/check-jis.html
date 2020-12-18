@@ -5,24 +5,36 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-
   <ion-navbar>
     <ion-title>JIS校验</ion-title>
   </ion-navbar>
-
 </ion-header>
-
-
 <ion-content padding>
   <form (submit)="scan()">
     <ion-searchbar #searchbar placeholder="{{barTextHolderText}}" [(ngModel)]="code" name="code"
       (ionFocus)="focusInput()" (ionBlur)="blurInput()">
     </ion-searchbar>
   </form>
-
+  <table style="white-space : nowrap;width: 100%;" border="1">
+    <tr>
+      <td>JIS单号</td>
+      <td colspan="4">{{item.JIS}}</td>
+    </tr>
+    <tr>
+      <td>料箱代码</td>
+      <td>{{item.boxCode}}</td>
+      <td>排序类型</td>
+      <td>{{item.orderBy}}</td>
+      <td>日计{{item.data.length}}单</td>
+    </tr>
+  </table> 
+    <ion-row *ngFor="let j of item.data;let i=index">
+      <ion-col>VSN:{{j.vsn}}&emsp;<span style="color: aqua;">{{j.color}}</span>&emsp;序号:{{i+1}}<br>CSN:{{j.csn}}&emsp;吊架号:{{j.diaojia}}&emsp;<span style="color: aqua;">{{j.part}}</span>&emsp;数量:{{j.count}}
+      </ion-col>
+    </ion-row>  
 </ion-content>
 <ion-footer>
   <ion-row>
-      <button no-margin ion-button full large color="primary" [disabled]="false" (click)="reset()">重置(F1)</button>
+    <button no-margin ion-button full large color="primary" [disabled]="!item.data.length" (click)="reset()">重置(F1)</button>
   </ion-row>
 </ion-footer>
