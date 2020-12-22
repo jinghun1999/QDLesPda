@@ -34,8 +34,8 @@ export class SettingsPage extends BaseUI {
     this.data.plant = this.api.plant;
     this.storage.get('WORKSHOP').then((val) => {
       this.data.workshop = val;
+      
     });
-    
     this.storage.get('store_area').then((val) => {
       this.data.store_area = val;
     });
@@ -60,7 +60,7 @@ export class SettingsPage extends BaseUI {
     addModal.present();
   }
   changeArea(workshop){
-    let addModal = this.modalCtrl.create('SetStorageAreaPage',{workshop:workshop}, );
+    let addModal = this.modalCtrl.create('SetStorageAreaPage',{workshop:this.data.workshop}, );
     addModal.onDidDismiss(ds => {
       if (ds) {       
         this.data.store_area = ds;

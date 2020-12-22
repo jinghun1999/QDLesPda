@@ -44,8 +44,7 @@ export class HomePage extends BaseUI {
       this.username = res;
     });
     //this.username = this.user._user.username;
-    this.version = this.api.version;
-    
+    this.version = this.api.version;    
   }
 
   /**
@@ -53,7 +52,6 @@ export class HomePage extends BaseUI {
    */
   ionViewDidLoad() {
     this.getWorkshop();
-    this.getArea();
   }
   getWorkshop = () => {
     this.storage.get("WORKSHOP").then((res) => {
@@ -81,15 +79,15 @@ export class HomePage extends BaseUI {
     );
   };
 
-  getArea() { 
-    this.storage.get("stora_area").then((res) => {
-      if (!res) {
-        this.setStoeaArea();
-      } else {
-        //this.store_area = res;
-      }
-    });
-  }
+  // getArea() { 
+  //   this.storage.get("stora_area").then((res) => {
+  //     if (!res) {
+  //       this.setStoeaArea();
+  //     } else {
+  //       //this.store_area = res;
+  //     }
+  //   });
+  // }
   // ionViewDidEnter(){
   //   document.addEventListener("keydown", this.keydown);
   // }
@@ -108,28 +106,22 @@ export class HomePage extends BaseUI {
       { enableBackdropDismiss: false, showBackdrop: false }
     );
     addModal.onDidDismiss((item) => {
-      this.getWorkshop();
       if (item) {
-        //this.items.add(item);
+        this.setStoeaArea(item);
       }
     });
     addModal.present();
   }
 
-  setStoeaArea() {
+  setStoeaArea(workshop) {
     let addModal = this.modalCtrl.create(
       "SetStorageAreaPage",
-      {},
-      { enableBackdropDismiss: false, showBackdrop: false }
-    );
+      {workshop:workshop});
     addModal.onDidDismiss((item) => {    
       if (item) { 
         this.store_area = item;
         this.getWorkshop();
       }
-      // if (!item) {
-      //   this.getWorkshop();
-      // }
     });
     addModal.present();
   }

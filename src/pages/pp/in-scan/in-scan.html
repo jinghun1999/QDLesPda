@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>入库扫描</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <form (submit)="scan()">
+    <ion-searchbar #searchbar placeholder="{{barTextHolderText}}" [(ngModel)]="code" name="code"
+      (ionFocus)="focusInput()" (ionBlur)="blurInput()">
+    </ion-searchbar>
+  </form>
+  <div>
+    <div class="ds-box" *ngFor="let part of item.parts;let i=index">
+      <div class="row" style="letter-spacing:-1px;">
+        <div class="col">
+          <span style="color:green;font-size:x-large;white-space:nowrap;letter-spacing:-2px;">
+            <ion-icon name='md-star'></ion-icon>单号:{{part.boxLabel}}
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col" style="white-space: nowrap;">
+          <span>
+            <ion-icon name='ios-cog'></ion-icon>23424242&emsp;上汽通用公司
+          </span>          
+        </div>
+      </div>
+      <div class="row">
+        <ion-icon name='md-time'></ion-icon><span>预计到货时间:2016</span>
+        <button ion-button color="danger" (click)="delete(i)" style="text-align: right;">X</button>
+      </div>
+    </div>
+  </div>
+  <message-list [data]="errors"></message-list>
+</ion-content>
+<ion-footer>
+  <ion-row>
+    <ion-col no-padding>
+      <button no-margin ion-button full large color="light" (click)="cancel()">取消(F1)</button>
+    </ion-col>
+    <ion-col no-padding>
+      <button no-margin ion-button full large color="primary" [disabled]="!item.parts.length"
+        (click)="save()">提交(F2)</button>
+    </ion-col>
+  </ion-row>
+</ion-footer>

@@ -67,6 +67,7 @@ export class CheckJisPage extends BaseUI {
       this.addkey();
       this.searchbar.setFocus();
     });
+    console.log('plant=' + this.plant + ',workshop=' + this.workshop + ',store_area=' + this.store_area);
   }
   ionViewWillUnload() {
     this.removekey();
@@ -89,10 +90,10 @@ export class CheckJisPage extends BaseUI {
       this.plant = this.api.plant;
       this.workshop = val;
     });
-    this.storage.get('store_area').then((val) => { 
+    this.storage.get('store_area').then((val) => {
       console.log(val);
       this.store_area = val;
-    });    
+    });
   }
 
   //扫描执行的过程
@@ -167,7 +168,7 @@ export class CheckJisPage extends BaseUI {
           "count": 45
         },
         {
-          
+
           "vsn": "C557DY0PRGA0006",
           "csn": "5268",
           "part": "23626893",

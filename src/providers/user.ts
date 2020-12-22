@@ -37,6 +37,7 @@ export class User {
       if (res.access_token) {
         this._loggedIn(res);
       } else {
+        alert('登录失败');
       }
     }, err => {
       console.error('ERROR', err);

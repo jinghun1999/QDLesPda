@@ -1,17 +1,14 @@
-import { Component, NgZone, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import {
   IonicPage,
   LoadingController,
   NavParams,
+  ViewController,
   ToastController,
-  NavController,
-  AlertController,
-  ModalController,
-  ViewController
+  NavController
 } from 'ionic-angular';
 import { Api } from '../../../providers';
 import { BaseUI } from '../../baseUI';
-import { fromEvent } from "rxjs/observable/fromEvent";
 import { Storage } from "@ionic/storage";
 
 
@@ -39,11 +36,10 @@ export class SetStorageAreaPage extends BaseUI {
   ionViewDidLoad() {
      
     this.plant = this.api.plant;
-    let loading = super.showLoading(this.loadingCtrl,"正在加载数据...");
+    //let loading = super.showLoading(this.loadingCtrl,"正在加载数据...");
     setTimeout(()=> {
       // 正确的写法 this.api.get('system/getAreas', { plant: this.api.plant,workshop:this.workshop, type: -1 }).subscribe((res: any) => { 
         this.api.get('system/getPlants', {plant: this.plant, type: -1}).subscribe((res: any) => { //测试写法
-          loading.dismiss();
         if (res.successful) {
           res.data = this.returnS();  //模拟数据
             this.list = res.data;
@@ -51,10 +47,11 @@ export class SetStorageAreaPage extends BaseUI {
             this.getConfig();
           } else {
             super.showToast(this.toastCtrl, res.message);
-          }
+        }
+        //loading.dismiss();
         },
         err => {
-          loading.dismiss();
+          //loading.dismiss();
           alert(JSON.stringify(err))
         });
     });

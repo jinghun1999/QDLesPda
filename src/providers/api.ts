@@ -12,7 +12,7 @@ export class Api {
   public plant: string = '700';
   public version: string = 'P-201030';
   
-  //public api_host: string = 'http://localhost:49280';
+  //public api_host: string = 'http://localhost:8100';
   //public api_host: string = 'http://127.0.0.1:49280';
   //public api_host: string = 'http://localhost/lesapi';
   //public api_host: string = 'http://10.1.126.171/qdapi';
@@ -37,22 +37,26 @@ export class Api {
       }
     }
 
-    return this.http.get(localStorage.getItem('env')+'/api' + '/' + endpoint, reqOpts);
+    return this.http.get(this.getUrl()+'/api' + '/' + endpoint, reqOpts);
   }  
 
   post(endpoint: string, body: any, reqOpts?: any) {
-    return this.http.post(localStorage.getItem('env')+'/api' + '/' + endpoint, body, reqOpts);
+    return this.http.post(this.getUrl()+'/api' + '/' + endpoint, body, reqOpts);
   }
 
   put(endpoint: string, body: any, reqOpts?: any) {
-    return this.http.put(localStorage.getItem('env')+'/api' + '/' + endpoint, body, reqOpts);
+    return this.http.put(this.getUrl()+'/api' + '/' + endpoint, body, reqOpts);
   }
 
   delete(endpoint: string, reqOpts?: any) {
-    return this.http.delete(localStorage.getItem('env')+'/api' + '/' + endpoint, reqOpts);
+    return this.http.delete(this.getUrl()+'/api' + '/' + endpoint, reqOpts);
   }
 
   patch(endpoint: string, body: any, reqOpts?: any) {
-    return this.http.patch(localStorage.getItem('env')+'/api' + '/' + endpoint, body, reqOpts);
+    return this.http.patch(this.getUrl()+'/api' + '/' + endpoint, body, reqOpts);
+  }
+  private getUrl() { 
+    const url = localStorage.getItem('env');
+    return url ? url : '';
   }
 }

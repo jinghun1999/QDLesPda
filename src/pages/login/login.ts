@@ -38,70 +38,44 @@ export class LoginPage extends BaseUI {
     this.setFocus();
     this.environment = [
       {
-        "id":1,
+        id:1,
         "text":"开发环境",
-        "value":'http://127.0.0.1:49280'
+        "value":'http://127.0.0.1:8081'
       },
       {
-        "id":2,
-        "text":"测试环境",
-        "value":'http://10.1.126.171/qdapi'
+        id:2,
+        text:"测试环境",
+        value:'http://10.1.126.171/qdapi'
       },
       {
-        "id":3,
-        "text":"厂外使用",
-        "value":'http://192.168.0.1:49280'
+        id:3,
+        text:"厂外使用",
+        value:'http://192.168.2.163:49280'
       },
       {
-        "id":4,
-        "text":"厂内环境",
-        "value":'http://172.168.0.1:49280'
+        id:4,
+        text:"厂内使用",
+        value:'http://172.168.0.1:49280'
       }
     ];    
-    this.gender = this.environment.find((e) => e.id == 2).value;
-    // this.api.getRequest().subscribe(data => { 
-    //   console.log(data);
-    // }, error => { 
-    //     console.log(error);
-    // });
-    /*let loading = super.showLoading(this.loadingCtrl, "正在加载数据...");
-    setTimeout(() => {
-      this.api.get('system/getPlants', {plant: this.api.plant}).subscribe((res: any) => {
-          loading.dismiss();
-          if (res.successful) {
-            this.workshops = res.data;
-          } else {
-            super.showToast(this.toastCtrl, res.message);
-          }
-        },
-        (err) => {
-          loading.dismiss();
-          alert(err.message);
-        });
-    });*/
+    this.gender = this.environment[1].value;    
   }
   //登录的时候存储
   changWS() {
     localStorage.getItem('env') ? localStorage.removeItem('env') : null;
     localStorage.setItem('env', this.gender);
   }
-  doLogin() {
-    // if (!this.workshop) {
-    //   super.showToast(this.toastCtrl, '请选择车间');
-    //   return;
-    // }
-    // this.storage.set('WORKSHOP', this.workshop).then((res) => {
+  doLogin() {    
     if (!this.account.name || !this.account.password) {
       super.showToast(this.toastCtrl, '请输入用户名密码');
       this.setFocus();
       return;
     } 
     
-    setTimeout(this.changWS(),100);
+    setTimeout(() => { this.changWS(), 100; });
     let loading = super.showLoading(this.loadingCtrl, "登录中...");
     this.user.login(this.account).subscribe((resp) => {
-      loading.dismiss();      
-      //this.navCtrl.push(MainPage);
+      loading.dismiss();   
       this.navCtrl.setRoot(HomePage, {}, {
         animate: true,
         direction: 'forward'
@@ -111,9 +85,6 @@ export class LoginPage extends BaseUI {
       super.showToast(this.toastCtrl, '登录失败' + err);
     });
 
-
-    // }).catch(() => {
-    // });
   }
 
   setFocus = () => {
