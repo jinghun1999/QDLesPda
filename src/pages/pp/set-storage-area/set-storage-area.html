@@ -22,12 +22,12 @@
   <ion-list>
     <ion-item>
       <ion-label>仓库</ion-label>
-      <ion-note item-end>{{workshop}}</ion-note>
+      <ion-note item-end>{{warehouse}}</ion-note>
     </ion-item>
   </ion-list>
   <h3 padding-left>选择默认存储区</h3>
-  <ion-list radio-group [(ngModel)]="store_area">
-    <ion-item *ngFor="let item of store_area_choose">
+  <ion-list radio-group [(ngModel)]="workshop">
+    <ion-item *ngFor="let item of workshop_choose">
       <ion-label>{{item.text}}</ion-label>
       <ion-radio value="{{item.value}}"></ion-radio>
     </ion-item>

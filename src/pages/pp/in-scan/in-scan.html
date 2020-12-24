@@ -27,8 +27,14 @@
         </div>
       </div>
       <div class="row">
-        <ion-icon name='md-time'></ion-icon><span>预计到货时间:2016</span>
-        <button ion-button color="danger" (click)="delete(i)" style="text-align: right;">X</button>
+        <div class="col"> 
+          <ion-icon name='md-time'></ion-icon><span>预计到货时间:{{part.date| date:'yyyy-MM-dd HH:mm:ss'}}</span>
+        <br>
+        <span style="font-size:small;color:gray;white-space:nowrap;">当前第{{i+1}}箱，共扫描{{item.parts.length}}箱</span>
+        </div>
+        <div class="col" style="text-align: right;">
+          <button ion-button color="danger" (click)="delete(i)" style="text-align: right;">X</button>
+        </div>
       </div>
     </div>
   </div>

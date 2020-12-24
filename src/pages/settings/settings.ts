@@ -1,21 +1,15 @@
 import { Component } from '@angular/core';
-//import { FormBuilder, FormGroup } from '@angular/forms';
 import {IonicPage, NavController, NavParams, App, ModalController} from 'ionic-angular';
 import {Storage} from "@ionic/storage";
 import {Settings, User, Api} from '../../providers';
-import {BaseUI} from '../'
-/**
- * The Settings page is a simple form that syncs with a Settings provider
- * to enable the user to customize settings for the app.
- *
- */
+import { BaseUI } from '../'
+
 @IonicPage()
 @Component({
   selector: 'page-settings',
   templateUrl: 'settings.html'
 })
 export class SettingsPage extends BaseUI {
-  // Our local settings object
   options: any;
   data: any = {};
   constructor(
@@ -32,12 +26,11 @@ export class SettingsPage extends BaseUI {
 
   ionViewDidLoad() {
     this.data.plant = this.api.plant;
-    this.storage.get('WORKSHOP').then((val) => {
-      this.data.workshop = val;
-      
+    this.storage.get('warehouse').then((val) => {
+      this.data.warehouse = val;
     });
-    this.storage.get('store_area').then((val) => {
-      this.data.store_area = val;
+    this.storage.get('workshop').then((val) => {
+      this.data.workshop = val;
     });
   }
 
@@ -48,22 +41,21 @@ export class SettingsPage extends BaseUI {
   ngOnChanges() {
     console.log('Ng All Changes');
   }
-
   change(){
     let addModal = this.modalCtrl.create('SetProfilePage',{}, );
     addModal.onDidDismiss(ds => {
-      if (ds) {       
-        this.data.workshop = ds;
+      if (ds) { 
+        this.data.warehouse = ds;
         this.changeArea(ds);
       }
     })
     addModal.present();
   }
-  changeArea(workshop){
-    let addModal = this.modalCtrl.create('SetStorageAreaPage',{workshop:this.data.workshop}, );
+  changeArea(warehouse) {
+    let addModal = this.modalCtrl.create('SetStorageAreaPage',{warehouse:warehouse} );
     addModal.onDidDismiss(ds => {
       if (ds) {       
-        this.data.store_area = ds;
+        this.data.workshop = ds;
       }
     })
     addModal.present();
@@ -71,7 +63,6 @@ export class SettingsPage extends BaseUI {
   logout() {
     this.user.logout().subscribe((re) => {
       setTimeout(() => {
-        // this.app.getRootNav().setRoot(LoginPage);
         this.app.getRootNav().setRoot('LoginPage', {}, {
           animate: true,
           direction: 'forward'
