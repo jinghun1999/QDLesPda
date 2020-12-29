@@ -40,7 +40,7 @@ export class LoginPage extends BaseUI {
       {
         id:1,
         "text":"开发环境",
-        "value":'http://127.0.0.1:8081'
+        "value":'http://192.168.1.4:8081'
       },
       {
         id:2,
@@ -62,17 +62,17 @@ export class LoginPage extends BaseUI {
   }
   //登录的时候存储
   changWS() {
-    localStorage.getItem('env') ? localStorage.removeItem('env') : null;
-    localStorage.setItem('env', this.gender);
+    localStorage.removeItem('env');
+    setTimeout(localStorage.setItem('env', this.gender),300);
+    ;
   }
   doLogin() {    
     if (!this.account.name || !this.account.password) {
       super.showToast(this.toastCtrl, '请输入用户名密码');
       this.setFocus();
       return;
-    } 
-    
-    setTimeout(() => { this.changWS(), 100; });
+    }    
+    this.changWS();
     let loading = super.showLoading(this.loadingCtrl, "登录中...");
     this.user.login(this.account).subscribe((resp) => {
       loading.dismiss();   
@@ -84,7 +84,6 @@ export class LoginPage extends BaseUI {
       loading.dismiss();
       super.showToast(this.toastCtrl, '登录失败' + err);
     });
-
   }
 
   setFocus = () => {

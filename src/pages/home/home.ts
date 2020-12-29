@@ -21,9 +21,9 @@ export class HomePage extends BaseUI {
   //currentItems: Menu[];
   //gridList: Menu[];
   gridList: any[] = [];
-  workshop: string;
+  warehouse: string;
   username: string;
-  store_area: string;
+  workshop: string;
   version: string;
 
   constructor(
@@ -38,27 +38,21 @@ export class HomePage extends BaseUI {
     public api: Api
   ) {
     super();
-    //this.currentItems = this.items.query();
-    //this.gridList = this.currentItems;
     this.storage.get("USER_INFO").then((res) => {
       this.username = res;
     });
-    //this.username = this.user._user.username;
-    this.version = this.api.version;    
+    this.version = this.api.version;
   }
 
-  /**
-   * The view loaded, let's query our items for the list
-   */
   ionViewDidLoad() {
-    this.getWorkshop();
+    this.getWarehouse();
   }
-  getWorkshop = () => {
-    this.storage.get("WORKSHOP").then((res) => {
+  getWarehouse = () => {
+    this.storage.get("warehouse").then((res) => {
       if (!res) {
         this.setProfile();
       } else {
-        //this.workshop = res;
+        //this.warehouse = res;
       }
     });
 
@@ -79,26 +73,6 @@ export class HomePage extends BaseUI {
     );
   };
 
-  // getArea() { 
-  //   this.storage.get("stora_area").then((res) => {
-  //     if (!res) {
-  //       this.setStoeaArea();
-  //     } else {
-  //       //this.store_area = res;
-  //     }
-  //   });
-  // }
-  // ionViewDidEnter(){
-  //   document.addEventListener("keydown", this.keydown);
-  // }
-  // ionViewWillUnload(){
-  //   document.removeEventListener("keydown", this.keydown);
-  //   alert('remove home')
-  // }
-  /**
-   * Prompt the user to add a new item. This shows our ItemCreatePage in a
-   * modal and then adds the new item to our data source if the user created one.
-   */
   setProfile() {
     let addModal = this.modalCtrl.create(
       "SetProfilePage",
@@ -107,28 +81,25 @@ export class HomePage extends BaseUI {
     );
     addModal.onDidDismiss((item) => {
       if (item) {
-        this.setStoeaArea(item);
+        //this.setStoeaArea(item.workshop_shoose);
       }
     });
     addModal.present();
   }
 
-  setStoeaArea(workshop) {
-    let addModal = this.modalCtrl.create(
-      "SetStorageAreaPage",
-      {workshop:workshop});
-    addModal.onDidDismiss((item) => {    
-      if (item) { 
-        this.store_area = item;
-        this.getWorkshop();
-      }
-    });
-    addModal.present();
-  }
+  // setStoeaArea(warehouse) {
+  //   let addModal = this.modalCtrl.create("SetStorageAreaPage", { warehouse: warehouse });
+  //   addModal.onDidDismiss((item) => {
+  //     if (item) {
+  //       this.workshop = item;
+  //       this.getWarehouse();
+  //     }
+  //   });
+  //   addModal.present();
+  // }
   openItem(item: any) {
     if (item.link_url) this.navCtrl.push(item.link_url, {});
   }
-
   getRowListByGridList(size) {
     var rowList = [];
     for (var i = 0; i < this.gridList.length; i += size) {

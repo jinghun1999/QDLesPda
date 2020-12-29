@@ -187,7 +187,6 @@ export class InScanPage extends BaseUI {
   cancel_do() {
     this.insertError('正在撤销...','i');
     this.code = '';
-    //this.errors = [];
     this.item.parts = [];
     this.insertError("撤销成功",'s');
     this.resetScan();
@@ -248,13 +247,13 @@ export class InScanPage extends BaseUI {
   returnList() { 
     return [
       {
-        Number: 'RS1000MC138450701201207D1269',
+        boxLabel: 'RS1000MC138450701201207D1269',
         partNo: '8450596',
         date: new Date(),
         plant:'柳州龙润汽车零部件制造有限公',
       },
       {
-        Number: 'RS1000WK018450704201203D2362',
+        boxLabel: 'RS1000WK018450704201203D2362',
         partNo: '8450596',
         date: new Date(),
         plant:'柳州龙润汽车零部件制造有限公',

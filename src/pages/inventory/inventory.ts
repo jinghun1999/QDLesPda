@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import {
   AlertController,
   IonicPage,
@@ -9,8 +9,9 @@ import {
   ToastController, ModalController,
 } from 'ionic-angular';
 
-import {BaseUI} from "../baseUI";
-import {Api} from "../../providers";
+import { BaseUI } from "../baseUI";
+import { Api } from "../../providers";
+import { Storage } from "@ionic/storage";
 
 @IonicPage()
 @Component({
@@ -19,7 +20,7 @@ import {Api} from "../../providers";
 })
 export class InventoryPage extends BaseUI {
   @ViewChild(Searchbar) searchbar: Searchbar;
-
+  store_area: string = ''; //存储区
   label: string = '';
   org: any;
   data: any = {
@@ -31,27 +32,33 @@ export class InventoryPage extends BaseUI {
   current_part_index: number = 0;
 
   constructor(public navCtrl: NavController,
-              public navParams: NavParams,
-              public toastCtrl: ToastController,
-              public loadingCtrl: LoadingController,
-              public alertCtrl: AlertController,
-              public modalCtrl: ModalController,
-              private api: Api) {
+    public navParams: NavParams,
+    public toastCtrl: ToastController,
+    public loadingCtrl: LoadingController,
+    public alertCtrl: AlertController,
+    public modalCtrl: ModalController,
+    public storage: Storage,
+    private api: Api) {
     super();
     this.org = navParams.get('item');
   }
 
-  ionViewDidEnter(){
+  ionViewDidEnter() {
     setTimeout(() => {
       this.searchSheet();
       this.searchbar.setFocus();
     });
+    this.storage.get('store_area').then(res => {
+      if (res) {
+        this.store_area = res;//JSON.parse(res);
+      }
+    }).catch(e => console.error(e.toString()));
   }
 
   searchSheet() {
     let loading = super.showLoading(this.loadingCtrl, "查询中...");
     if (this.org && this.org.code) {
-      this.api.get('inventory/getScanCode', {code: this.org.code}).subscribe((res: any) => {
+      this.api.get('inventory/getScanCode', { code: this.org.code }).subscribe((res: any) => {
         loading.dismissAll();
         //debugger;
         if (res.successful) {
@@ -140,10 +147,10 @@ export class InventoryPage extends BaseUI {
       prompt.present();
     }
   }
-  get ok_count(){
+  get ok_count() {
     let c = 0;
-    this.data.parts.forEach((item, index)=>{
-      if(item.real_qty || item.real_qty === 0){
+    this.data.parts.forEach((item, index) => {
+      if (item.real_qty || item.real_qty === 0) {
         c++;
       }
     });
@@ -155,7 +162,7 @@ export class InventoryPage extends BaseUI {
       this.navCtrl.pop();
   }
 
-  close(){
+  close() {
     const prompt = this.alertCtrl.create({
       title: '关闭盘点单',
       message: "关闭后该盘点单将不能再继续盘点，您确定要关闭吗?",
@@ -169,7 +176,7 @@ export class InventoryPage extends BaseUI {
         {
           text: '确认关闭',
           handler: () => {
-            this.api.get('inventory/getClose', {id: this.data.id}).subscribe((res: any) => {
+            this.api.get('inventory/getClose', { id: this.data.id }).subscribe((res: any) => {
               if (res.successful) {
                 //已关闭
                 super.showToast(this.toastCtrl, '已关闭该盘点单', 'success');
@@ -193,40 +200,40 @@ export class InventoryPage extends BaseUI {
   get noSubmit() {
     return this.part_total === 0 || this.ok_count < this.part_total;
   }
-  prev(){
+  prev() {
     this.current_part_index > 0 && this.current_part_index--;
   }
   next() {
     this.current_part_index < this.part_total - 1 && this.current_part_index++;
   }
 
-  changeQ(){
-    if(!this.data.parts[this.current_part_index].real_qty){
+  changeQ() {
+    if (!this.data.parts[this.current_part_index].real_qty) {
       super.showToast(this.toastCtrl, '没有盘点数量', 'error');
       return;
     }
     let o = this.data.parts[this.current_part_index];
-    this.api.post('inventory/postRealQty', o).subscribe((res: any)=>{
-      if(res.successful){
+    this.api.post('inventory/postRealQty', o).subscribe((res: any) => {
+      if (res.successful) {
         super.showToast(this.toastCtrl, '已更新', 'success');
-      }else{
+      } else {
         super.showToast(this.toastCtrl, res.message, 'error');
       }
-    }, err=>{
+    }, err => {
       super.showToast(this.toastCtrl, err.message, 'error');
     })
   }
 
-  save(){
-    this.api.get('inventory/getSubmit', {id: this.data.id}).subscribe((res: any)=>{
-      if(res.successful){
+  save() {
+    this.api.get('inventory/getSubmit', { id: this.data.id }).subscribe((res: any) => {
+      if (res.successful) {
         super.showToast(this.toastCtrl, '已完成盘点', 'success');
-        setTimeout(()=>{
-          if(this.navCtrl.canGoBack()){
+        setTimeout(() => {
+          if (this.navCtrl.canGoBack()) {
             this.navCtrl.popToRoot();
           }
         }, 1000);
-      }else{
+      } else {
         super.showToast(this.toastCtrl, res.message, 'error');
       }
     });

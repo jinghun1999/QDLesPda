@@ -9,18 +9,19 @@ import { Storage } from "@ionic/storage";
  */
 @Injectable()
 export class Api {
-  public plant: string = '700';
+  public plant: string = '7000';
   public version: string = 'P-201030';
   
   //public api_host: string = 'http://localhost:8100';
   //public api_host: string = 'http://127.0.0.1:49280';
-  //public api_host: string = 'http://localhost/lesapi';
-  //public api_host: string = 'http://10.1.126.171/qdapi';
+  //public api_host: string = 'http://192.168.1.4:8081';
+  public api_host: string = 'http://10.1.126.171/qdapi';
   //public api_host: string ='http://localhost:49280';
   //public api_host: string = 'http://10.34.243.14/lesapi';
   //url: string = this.api_host+'/api';
 
-  constructor(public http: HttpClient, public events: Events, public alertCtrl: AlertController, public toastCtrl: ToastController, public storage: Storage) { 
+  constructor(public http: HttpClient, public events: Events, public alertCtrl: AlertController, public toastCtrl: ToastController, public storage: Storage) {
+    //localStorage.removeItem('env');
   }
   get(endpoint: string, params?: any, reqOpts?: any) {
     if (!reqOpts) {
@@ -55,8 +56,8 @@ export class Api {
   patch(endpoint: string, body: any, reqOpts?: any) {
     return this.http.patch(this.getUrl()+'/api' + '/' + endpoint, body, reqOpts);
   }
-  private getUrl() { 
+  private getUrl() {     
     const url = localStorage.getItem('env');
-    return url ? url : '';
+    return url ? url : this.api_host;
   }
 }

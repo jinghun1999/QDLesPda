@@ -26,11 +26,11 @@ export class CheckJisPage extends BaseUI {
   barTextHolderText: string = '扫描JIS单号，光标在此处';   //扫描文本框placeholder属性
   keyPressed: any;
   jis: string = '';
-  workshop_list: any[] = [];//加载获取的的车间列表
+  warehouse_list: any[] = [];//加载获取的的车间列表
   errors: any[] = [];
   plant: string = '';
-  store_area: string = '';
   workshop: string = '';
+  warehouse: string = '';
   JISList: any[] = [];
   item: any = {
     JIS: '',
@@ -67,7 +67,6 @@ export class CheckJisPage extends BaseUI {
       this.addkey();
       this.searchbar.setFocus();
     });
-    console.log('plant=' + this.plant + ',workshop=' + this.workshop + ',store_area=' + this.store_area);
   }
   ionViewWillUnload() {
     this.removekey();
@@ -86,14 +85,14 @@ export class CheckJisPage extends BaseUI {
     });
   }
   ionViewDidLoad() {
-    this.storage.get('WORKSHOP').then((val) => {
+    this.storage.get('warehouse').then((val) => {
       this.plant = this.api.plant;
+      this.warehouse = val;
+    });
+    this.storage.get('workshop').then((val) => {      
       this.workshop = val;
     });
-    this.storage.get('store_area').then((val) => {
-      console.log(val);
-      this.store_area = val;
-    });
+    
   }
 
   //扫描执行的过程
