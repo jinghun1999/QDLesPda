@@ -118,7 +118,7 @@ export class OutPage extends BaseUI {
 
       let prefix = this.code.substr(0, 2).toUpperCase();
 
-      if (prefix != 'RS' && prefix != 'LN') {
+      if (prefix != 'RS' && prefix != 'JY' && prefix != 'LN') {
         err = '无效的扫描，请重试！';
         this.insertError(err);
       } else if (prefix == 'LN' && this.scanFlag == 0) {
