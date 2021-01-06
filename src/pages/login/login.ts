@@ -40,7 +40,7 @@ export class LoginPage extends BaseUI {
       {
         id:1,
         "text":"开发环境",
-        "value":'http://192.168.1.4:8081'
+        "value":'http://192.168.1.6:8100'
       },
       {
         id:2,
@@ -63,7 +63,7 @@ export class LoginPage extends BaseUI {
   //登录的时候存储
   changWS() {
     localStorage.removeItem('env');
-    setTimeout(localStorage.setItem('env', this.gender),300);
+    setTimeout(localStorage.setItem('env', this.gender),200);
     ;
   }
   doLogin() {    

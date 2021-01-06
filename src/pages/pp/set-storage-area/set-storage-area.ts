@@ -30,11 +30,12 @@ export class SetStorageAreaPage extends BaseUI {
               public viewCtrl: ViewController,
               public api: Api) {
     super();
-    this.warehouse = this.navParams.get('warehouse');
   }
-
   ionViewDidLoad() {     
     this.plant = this.api.plant;
+    this.storage.get('warehouse').then((val) => { 
+      this.warehouse = val;
+    });
     let loading = super.showLoading(this.loadingCtrl, "正在加载数据...");
     this.storage.get('workshop_shoose').then(res => {
       if (res) {
@@ -43,9 +44,8 @@ export class SetStorageAreaPage extends BaseUI {
     }).catch(e => console.error(e.toString()));
     loading.dismiss();
    }
-
   save() {
-    this.storage.set('workshop', this.workshop).then((res)=>{
+    this.storage.set('workshop', this.workshop).then((res) => {
       this.viewCtrl.dismiss(this.workshop);
     }).catch(() => { });
   }

@@ -28,9 +28,11 @@ export class CheckJisPage extends BaseUI {
   jis: string = '';
   warehouse_list: any[] = [];//加载获取的的车间列表
   errors: any[] = [];
+  scanOrder: number = 0;  //记录扫描的顺序
   plant: string = '';
   workshop: string = '';
   warehouse: string = '';
+  show: boolean = false;
   JISList: any[] = [];
   item: any = {
     JIS: '',
@@ -67,6 +69,7 @@ export class CheckJisPage extends BaseUI {
       this.addkey();
       this.searchbar.setFocus();
     });
+    this.item = this.returnJIS();
   }
   ionViewWillUnload() {
     this.removekey();
@@ -91,17 +94,28 @@ export class CheckJisPage extends BaseUI {
     });
     this.storage.get('workshop').then((val) => {      
       this.workshop = val;
-    });
-    
+    }); 
   }
 
   //扫描执行的过程
   scan() {
-    this.item = this.returnJIS();
-
+    
     this.JISList.length ? this.jis = this.code : null;
+    if (this.item) {
+      const scanIndex = this.item.data.findIndex(p => p.vsn == this.code);
+      if (scanIndex != this.scanOrder) { 
+        this.insertError('匹配不成功');
+      }
+      this.scanOrder++;
+    } else { 
+      ///this.api.get();
+    }
+
 
     this.code = '';
+  }
+  showErr() { 
+    this.show = !this.show;
   }
   reset() {
     this.insertError('正在重置', 'i');
@@ -126,6 +140,14 @@ export class CheckJisPage extends BaseUI {
       "boxCode": "ZL",
       "orderBy": "ABS模板",
       "data": [
+        {
+          "vsn": "C557DY0PRGA0000",
+          "csn": "5268",
+          "color": "珠光白",
+          "diaojia": "3511",
+          "part": "23626893",
+          "count": 45
+        },
         {
           "vsn": "C557DY0PRGA0001",
           "csn": "5268",

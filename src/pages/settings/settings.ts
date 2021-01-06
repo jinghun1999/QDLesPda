@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import {IonicPage, NavController, NavParams, App, ModalController} from 'ionic-angular';
-import {Storage} from "@ionic/storage";
-import {Settings, User, Api} from '../../providers';
+import { IonicPage, NavController, NavParams, App, ModalController } from 'ionic-angular';
+import { Storage } from "@ionic/storage";
+import { Settings, User, Api } from '../../providers';
 import { BaseUI } from '../'
 
 @IonicPage()
@@ -11,6 +11,7 @@ import { BaseUI } from '../'
 })
 export class SettingsPage extends BaseUI {
   options: any;
+  workshop: string = '';
   data: any = {};
   constructor(
     private app: App,
@@ -22,40 +23,28 @@ export class SettingsPage extends BaseUI {
     public storage: Storage,
     public user: User) {
     super();
-  }
 
+  }
+  ionViewDidEnter() {
+    this.storage.get('workshop').then((val) => {
+      this.data.workshop = val;
+    });
+  }
   ionViewDidLoad() {
     this.data.plant = this.api.plant;
     this.storage.get('warehouse').then((val) => {
       this.data.warehouse = val;
     });
-    this.storage.get('workshop').then((val) => {
-      this.data.workshop = val;
-    });
   }
-
-  ionViewWillEnter() {
-
-  }
-
   ngOnChanges() {
-    console.log('Ng All Changes');
+
   }
-  change(){
-    let addModal = this.modalCtrl.create('SetProfilePage',{}, );
+  change() {
+    let addModal = this.modalCtrl.create('SetProfilePage', {},);
     addModal.onDidDismiss(ds => {
-      if (ds) { 
-        this.data.warehouse = ds;
-        this.changeArea(ds);
-      }
-    })
-    addModal.present();
-  }
-  changeArea(warehouse) {
-    let addModal = this.modalCtrl.create('SetStorageAreaPage',{warehouse:warehouse} );
-    addModal.onDidDismiss(ds => {
-      if (ds) {       
-        this.data.workshop = ds;
+      if (ds) {
+        this.data.warehouse = ds.warehouse;
+        this.setStoeaArea(this.data.warehouse);
       }
     })
     addModal.present();
@@ -71,5 +60,18 @@ export class SettingsPage extends BaseUI {
     }, (r) => {
       alert('注销失败');
     });
+  }
+  setStoeaArea(warehouse) {
+    if (!this.data.warehouse) {
+      alert('请先选择仓库');
+      return;
+    }
+    let addModal = this.modalCtrl.create("SetStorageAreaPage", { warehouse: warehouse });
+    addModal.onDidDismiss((item) => {
+      if (item) {
+        this.data.workshop = item;
+      }
+    });
+    addModal.present();
   }
 }

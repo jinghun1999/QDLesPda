@@ -28,6 +28,12 @@
     </ion-row>  
 </ion-content>
 <ion-footer>
+  <ion-row *ngIf="!show" (click)="showErr()" >
+    <label  class="lbl_err">{{errors[errors.length-1]?errors[errors.length-1].message:''}}</label>
+  </ion-row>
+  <ion-row *ngIf="show" (click)="showErr()">
+    <message-list [data]="errors"></message-list>
+  </ion-row>
   <ion-row>
     <button no-margin ion-button full large color="primary" [disabled]="!item.data.length" (click)="reset()">重置(F1)</button>
   </ion-row>

@@ -11,17 +11,13 @@ import { Storage } from "@ionic/storage";
 export class Api {
   public plant: string = '7000';
   public version: string = 'P-201030';
-  
-  //public api_host: string = 'http://localhost:8100';
-  //public api_host: string = 'http://127.0.0.1:49280';
-  //public api_host: string = 'http://192.168.1.4:8081';
+
   public api_host: string = 'http://10.1.126.171/qdapi';
-  //public api_host: string ='http://localhost:49280';
-  //public api_host: string = 'http://10.34.243.14/lesapi';
+
   //url: string = this.api_host+'/api';
 
   constructor(public http: HttpClient, public events: Events, public alertCtrl: AlertController, public toastCtrl: ToastController, public storage: Storage) {
-    //localStorage.removeItem('env');
+    localStorage.removeItem('env');
   }
   get(endpoint: string, params?: any, reqOpts?: any) {
     if (!reqOpts) {
@@ -37,27 +33,27 @@ export class Api {
         reqOpts.params = reqOpts.params.set(k, params[k]);
       }
     }
-
-    return this.http.get(this.getUrl()+'/api' + '/' + endpoint, reqOpts);
-  }  
+    return this.http.get(this.getUrl() + '/api' + '/' + endpoint, reqOpts);
+  }
 
   post(endpoint: string, body: any, reqOpts?: any) {
-    return this.http.post(this.getUrl()+'/api' + '/' + endpoint, body, reqOpts);
+    return this.http.post(this.getUrl() + '/api' + '/' + endpoint, body, reqOpts);
   }
 
   put(endpoint: string, body: any, reqOpts?: any) {
-    return this.http.put(this.getUrl()+'/api' + '/' + endpoint, body, reqOpts);
+    return this.http.put(this.getUrl() + '/api' + '/' + endpoint, body, reqOpts);
   }
 
   delete(endpoint: string, reqOpts?: any) {
-    return this.http.delete(this.getUrl()+'/api' + '/' + endpoint, reqOpts);
+    return this.http.delete(this.getUrl() + '/api' + '/' + endpoint, reqOpts);
   }
 
   patch(endpoint: string, body: any, reqOpts?: any) {
-    return this.http.patch(this.getUrl()+'/api' + '/' + endpoint, body, reqOpts);
+    return this.http.patch(this.getUrl() + '/api' + '/' + endpoint, body, reqOpts);
   }
-  private getUrl() {     
-    const url = localStorage.getItem('env');
-    return url ? url : this.api_host;
+  private getUrl() {
+    //const url = localStorage.getItem('env');
+    //return url ? url : this.api_host;
+    return this.api_host;
   }
 }

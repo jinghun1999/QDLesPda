@@ -104,7 +104,7 @@ export class InScanPage extends BaseUI {
   //校验扫描
   checkScanCode() {
     let err = '';
-    if (this.code=='') {
+    if (this.code == '') {
       err = '请扫描零件号！';
       this.insertError(err);
     }
@@ -140,7 +140,7 @@ export class InScanPage extends BaseUI {
         if (this.item.parts.findIndex(p => p.boxLabel === model.boxLabel) >= 0) {
           this.insertError(`零件${model.boxLabel}已扫描过，请扫描其他标签`);
           return;
-        }        
+        }
         this.item.parts.splice(0, 0, model);
       }
       else {
@@ -160,7 +160,7 @@ export class InScanPage extends BaseUI {
     });
     _m.onDidDismiss(data => {
       if (data) {
-        model.packingQty-data.receive>0?model.currentParts = data.receive:this.insertError('数量不能大于包装数');        
+        model.packingQty - data.receive > 0 ? model.currentParts = data.receive : this.insertError('数量不能大于包装数');
       }
     });
     _m.present();
@@ -185,10 +185,10 @@ export class InScanPage extends BaseUI {
 
   //撤销
   cancel_do() {
-    this.insertError('正在撤销...','i');
+    this.insertError('正在撤销...', 'i');
     this.code = '';
     this.item.parts = [];
-    this.insertError("撤销成功",'s');
+    this.insertError("撤销成功", 's');
     this.resetScan();
   }
 
@@ -197,31 +197,31 @@ export class InScanPage extends BaseUI {
     this.item.parts.splice(i, 1);
   }
   //手工调用，重新加载数据模型
-  resetScan() { 
+  resetScan() {
     setTimeout(() => {
       this.code = '';
       this.searchbar.setFocus();
-     });           
+    });
   }
   //提交
   save() {
-    if (this.item.parts.length==0) {
-      this.insertError('请先扫描零件号','i');
+    if (this.item.parts.length == 0) {
+      this.insertError('请先扫描零件号', 'i');
       return;
     };
 
     if (new Set(this.item.parts).size !== this.item.parts.length) {
-      this.insertError("明细列表存在重复的零件号，请检查！",'i');
+      this.insertError("明细列表存在重复的零件号，请检查！", 'i');
       return;
     };
-    let loading = super.showLoading(this.loadingCtrl,'提交中...');
+    let loading = super.showLoading(this.loadingCtrl, '提交中...');
     this.api.post('PP/PostPartsStorageIn', this.item).subscribe((res: any) => {
       if (res.successful) {
-        this.insertError('提交成功','s');
+        this.insertError('提交成功', 's');
         this.item.parts = [];
       }
       else {
-        this.insertError('提交失败,'+res.message); 
+        this.insertError('提交失败,' + res.message);
       }
       loading.dismiss();
     },
@@ -232,7 +232,7 @@ export class InScanPage extends BaseUI {
     this.resetScan();
   }
   //下拉框改变
-  changWS(target: string) {    
+  changWS(target: string) {
     this.item.parts = [];
     this.resetScan();
   }
@@ -244,19 +244,19 @@ export class InScanPage extends BaseUI {
     this.searchbar.setElementClass('bg-green', false);
     this.searchbar.setElementClass('bg-red', true);
   };
-  returnList() { 
+  returnList() {
     return [
       {
         boxLabel: 'RS1000MC138450701201207D1269',
         partNo: '8450596',
         date: new Date(),
-        plant:'柳州龙润汽车零部件制造有限公',
+        plant: '柳州龙润汽车零部件制造有限公',
       },
       {
         boxLabel: 'RS1000WK018450704201203D2362',
         partNo: '8450596',
         date: new Date(),
-        plant:'柳州龙润汽车零部件制造有限公',
+        plant: '柳州龙润汽车零部件制造有限公',
       }
     ];
   }
