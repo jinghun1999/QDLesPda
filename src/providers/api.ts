@@ -9,8 +9,8 @@ import { Storage } from "@ionic/storage";
  */
 @Injectable()
 export class Api {
-  public plant: string = '7000';
-  public version: string = 'P-201030';
+  public plant: string = '3000';
+  public version: string = 'P-210106';
 
   public api_host: string = 'http://10.1.126.171/qdapi';
 
