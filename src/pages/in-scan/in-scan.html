@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>入库扫描</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <form (submit)="scan()">
+    <ion-searchbar #searchbar placeholder="{{barTextHolderText}}" [(ngModel)]="code" name="code"
+      (ionFocus)="focusInput()" (ionBlur)="blurInput()">
+    </ion-searchbar>
+  </form>
+  <div>
+    <div class="ds-box" nopadding *ngFor="let part of item;let i=index">
+      <div class="row" style="letter-spacing:-1px;margin:0 0 0 0;">
+        <span style="color:green;font-size:x-large;white-space:nowrap;letter-spacing:-2px;">
+          <svg t="1610203531219" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3444" width="16" height="16"><path d="M62.996776 484.061694l423.162696 0L486.159472 60.900022 62.996776 60.900022 62.996776 484.061694zM168.788218 166.69044l211.580836 0 0 211.580836L168.788218 378.271276 168.788218 166.69044zM539.055193 60.900022l0 423.162696 423.162696 0L962.217888 60.900022 539.055193 60.900022zM856.426447 378.271276 644.845611 378.271276 644.845611 166.69044l211.580836 0L856.426447 378.271276zM221.682915 325.376579l105.790418 0L327.473333 219.585137 221.682915 219.585137 221.682915 325.376579zM62.996776 960.120111l423.162696 0L486.159472 536.957415 62.996776 536.957415 62.996776 960.120111zM168.788218 642.747833l211.580836 0 0 211.580836L168.788218 854.328669 168.788218 642.747833zM803.531749 219.585137 697.740308 219.585137l0 105.790418 105.790418 0L803.530726 219.585137zM539.055193 960.120111l105.790418 0L644.845611 854.329692 539.055193 854.329692 539.055193 960.120111zM644.845611 642.747833l0 211.580836 105.790418 0L750.636029 642.747833 644.845611 642.747833zM856.426447 854.329692 750.636029 854.329692 750.636029 960.120111l211.580836 0L962.216865 748.538251 856.426447 748.538251 856.426447 854.329692zM856.426447 642.747833l105.790418 0L962.216865 536.957415 856.426447 536.957415 856.426447 642.747833zM539.055193 536.957415l0 105.790418 105.790418 0L644.845611 536.957415 539.055193 536.957415zM221.682915 801.433972l105.790418 0L327.473333 695.643554 221.682915 695.643554 221.682915 801.433972z" fill="#00b51d" p-id="3445"></path></svg>单号:{{part.sheet_no}}
+        </span>
+        <br>
+        <span>
+          <svg t="1610203750297" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2535" width="16" height="16"><path d="M1012.555 787.485c8 15.165 11.805 29.491 11.418 42.85-0.387 13.36-4.386 24.91-11.998 34.72-7.613 9.745-18.322 17.554-32.127 23.298-13.805 5.808-29.804 8.647-47.932 8.647H84.046c-19.61 0-35.803-3.614-48.512-10.841-12.708-7.229-21.998-16.457-27.804-27.687-5.806-11.228-8.322-23.877-7.613-37.946 0.71-14.133 4.71-28.396 11.999-42.85a6983.401 6983.401 0 0 1 33.224-62.923 24880.267 24880.267 0 0 0 36.513-68.343l37.029-69.374c12.321-23.169 24.32-45.175 35.933-66.15 26.9-49.884 54.189-99.77 81.799-149.72l138.441 270.08L647.485 128c48.706 85.316 95.541 168.824 140.57 250.59a8437.818 8437.818 0 0 1 59.932 107.903 12929.15 12929.15 0 0 0 60.51 109.58 8801.407 8801.407 0 0 1 56.642 103.063c17.805 32.848 33.61 62.277 47.415 88.348v0.001z" p-id="2536"></path></svg>{{part.sup_code}}&emsp;{{part.sup_name}}
+        </span>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ion-icon name='md-time'></ion-icon><span>预计到货时间:{{part.expect_time| date:'yyyy-MM-dd HH:mm:ss'}}</span>
+          <br>
+          <span style="font-size:small;color:gray;white-space:nowrap;">当前第{{i+1}}箱，共扫描{{item.length}}箱</span>
+        </div>
+        <div class="col" style="text-align: right;">
+          <button ion-button color="danger" (click)="delete(i)" style="text-align: right;">X</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+<ion-footer>
+  <ion-row *ngIf="!show" (click)="showErr()">
+    <label class="lbl_err">{{errors[0]?errors[0].message:''}}</label>
+  </ion-row>
+  <ion-row *ngIf="show" (click)="showErr()">
+    <message-list [data]="errors"></message-list>
+  </ion-row>
+  <ion-row>
+    <ion-col no-padding>
+      <button no-margin ion-button full large color="light" (click)="cancel()">取消(F1)</button>
+    </ion-col>
+    <ion-col no-padding>
+      <button no-margin ion-button full large color="primary" [disabled]="!item.length"
+        (click)="showConfirm()">提交(F2)</button>
+    </ion-col>
+  </ion-row>
+</ion-footer>

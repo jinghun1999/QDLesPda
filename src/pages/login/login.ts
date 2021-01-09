@@ -12,7 +12,6 @@ import { HomePage, BaseUI } from '../';
 })
 export class LoginPage extends BaseUI {
   @ViewChild('userName') usernameInput;
-  //workshops: any[] = [];
   version: string;
   res: any = {};
   environment: any[] = [];
@@ -58,7 +57,7 @@ export class LoginPage extends BaseUI {
         value:'http://172.168.0.1:49280'
       }
     ];    
-    this.gender = this.environment[1].value;    
+    this.gender = this.environment[0].value;    
   }
   //登录的时候存储
   changWS() {
