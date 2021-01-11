@@ -214,6 +214,7 @@ export class InScanPage extends BaseUI {
     for (let item of this.item) { 
       this.sheet_list.push(item.sheet_no);
     }
+    console.log(this.sheet_list);
     this.api.post('wm/postArrived', this.sheet_list).subscribe((res: any) => {
       if (res.successful) {
         this.insertError('提交成功', 's');
@@ -226,7 +227,7 @@ export class InScanPage extends BaseUI {
       loading.dismiss();
     },
       error => {
-        this.insertError('提交失败,' + error);
+        this.insertError('提交失败');
         loading.dismiss();
       });
     this.resetScan();
