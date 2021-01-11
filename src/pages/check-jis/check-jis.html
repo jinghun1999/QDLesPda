@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>JIS校验</ion-title>
+  </ion-navbar>
+  <form (submit)="scan()">
+    <ion-searchbar #searchbar placeholder="{{barTextHolderText}}" [(ngModel)]="label" name="label"
+      (ionFocus)="focusInput()" (ionBlur)="blurInput()">
+    </ion-searchbar>
+  </form>
+</ion-header>
+<ion-content>
+  <table style="white-space : nowrap;width: 100%;" border="1">
+    <tr>
+      <td>JIS单号</td>
+      <td colspan="4">{{item.jis_no}}</td>
+    </tr>
+    <tr>
+      <td>料箱代码</td>
+      <td>{{item.rack}}</td>
+      <td>排序类型</td>
+      <td>{{item.rack_name}}</td>
+      <td>日计第{{item.sheet_c}}单</td>
+    </tr>
+  </table> 
+  <div class="ds-box" *ngFor="let part of item.parts;let i=index" [ngStyle]="{'background-color':  scanOrder>i+1 ? 'green' : scanOrder==i+1?'red':''}">
+    <ion-row >
+      <ion-col>VSN:{{part.vsn}}&emsp;<span>{{part.color}}</span>&emsp;序号:{{i+1}}<br>CSN:{{part.csn}}&emsp;吊架号:{{part.car_seq}}&emsp;<span >{{part.part_no}}</span>&emsp;数量:{{part.qty}}
+      </ion-col>
+    </ion-row>  
+  </div>    
+</ion-content>
+<ion-footer>
+  <ion-row *ngIf="!show" (click)="showErr()" >
+    <label  class="lbl_err">{{errors[0]?errors[0].message:''}}</label>
+  </ion-row>
+  <ion-row *ngIf="show" (click)="showErr()">
+    <message-list [data]="errors"></message-list>
+  </ion-row>
+  <ion-row>
+    <button no-margin ion-button full large color="primary" [disabled]="true" (click)="reset()">重置(F1)</button>
+  </ion-row>
+</ion-footer>

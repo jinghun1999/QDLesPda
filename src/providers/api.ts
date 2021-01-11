@@ -17,7 +17,7 @@ export class Api {
   //url: string = this.api_host+'/api';
 
   constructor(public http: HttpClient, public events: Events, public alertCtrl: AlertController, public toastCtrl: ToastController, public storage: Storage) {
-    localStorage.removeItem('env');
+    
   }
   get(endpoint: string, params?: any, reqOpts?: any) {
     if (!reqOpts) {
@@ -54,6 +54,7 @@ export class Api {
   private getUrl() {
     //const url = localStorage.getItem('env');
     //return url ? url : this.api_host;
-    return this.api_host;
+    //return this.api_host;
+    return 'http://192.168.1.6:8100';
   }
 }

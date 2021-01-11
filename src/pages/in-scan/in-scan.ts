@@ -9,8 +9,8 @@ import {
   ModalController,
   Searchbar
 } from 'ionic-angular';
-import { Api } from '../../../providers';
-import { BaseUI } from '../../baseUI';
+import { Api } from '../../providers';
+import { BaseUI } from '../baseUI';
 import { fromEvent } from "rxjs/observable/fromEvent";
 import { Storage } from "@ionic/storage";
 @IonicPage()
@@ -26,12 +26,9 @@ export class InScanPage extends BaseUI {
   keyPressed: any;
   workshop_list: any[] = [];//加载获取的的车间列表
   errors: any[] = [];
-  item: any = {
-    plant: '',
-    workshop: '',  //源车间
-    target: '', //目标仓库
-    parts: [],
-  };
+  show: boolean = false;
+  item: any[] = [];
+  sheet_list: any[] = [];
   constructor(public navParams: NavParams,
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
@@ -62,7 +59,6 @@ export class InScanPage extends BaseUI {
       this.addkey();
       this.searchbar.setFocus();
     });
-    this.item.parts = this.returnList();
   }
   ionViewWillUnload() {
     this.removekey();
@@ -80,26 +76,7 @@ export class InScanPage extends BaseUI {
       this.errors.splice(0, 0, { message: msg, type: t, time: new Date() });
     });
   }
-  ionViewDidLoad() {
-    this.storage.get('WORKSHOP').then((val) => {
-      this.item.plant = this.api.plant;
-      this.item.workshop = val;
-      this.getWorkshops();
-    });
-  }
-  private getWorkshops() {
-    this.api.get('system/getPlants', { plant: this.api.plant }).subscribe((res: any) => {
-      if (res.successful) {
-        this.workshop_list = res.data;
-        this.item.target = this.item.workshop;
-      } else {
-        this.insertError(res.message);
-      }
-    },
-      err => {
-        this.insertError('系统级别错误，请返回重试');
-      });
-  }
+
 
   //校验扫描
   checkScanCode() {
@@ -109,7 +86,7 @@ export class InScanPage extends BaseUI {
       this.insertError(err);
     }
 
-    if (this.item.parts.findIndex(p => p.boxLabel === this.code) >= 0) {
+    if (this.item.findIndex(p => p.boxLabel === this.code) >= 0) {
       err = `零件${this.code}已扫描过，请扫描其他标签`;
       this.insertError(err);
     }
@@ -120,7 +97,6 @@ export class InScanPage extends BaseUI {
     }
     return true;
   }
-
 
   //开始扫描
   scan() {
@@ -134,14 +110,14 @@ export class InScanPage extends BaseUI {
   }
   //扫描执行的过程
   scanSheet() {
-    this.api.get('PP/GetPartsStorageIn', { plant: this.api.plant, workshop: this.item.target, box_label: this.code }).subscribe((res: any) => {
+    this.api.get('wm/getInboundSheet/' + this.code).subscribe((res: any) => {
       if (res.successful) {
         let model = res.data;
-        if (this.item.parts.findIndex(p => p.boxLabel === model.boxLabel) >= 0) {
-          this.insertError(`零件${model.boxLabel}已扫描过，请扫描其他标签`);
+        if (this.item.findIndex(p => p.sheet_no === model.sheet_no) >= 0) {
+          this.insertError(`零件${model.sheet_no}已扫描过，请扫描其他标签`);
           return;
         }
-        this.item.parts.splice(0, 0, model);
+        this.item.push(res.data);
       }
       else {
         this.insertError(res.message,);
@@ -187,14 +163,15 @@ export class InScanPage extends BaseUI {
   cancel_do() {
     this.insertError('正在撤销...', 'i');
     this.code = '';
-    this.item.parts = [];
+    this.item.length = 0;
+    this.sheet_list.length = 0;
+
     this.insertError("撤销成功", 's');
-    this.resetScan();
   }
 
   //删除
   delete(i) {
-    this.item.parts.splice(i, 1);
+    this.item.splice(i, 1);
   }
   //手工调用，重新加载数据模型
   resetScan() {
@@ -203,22 +180,45 @@ export class InScanPage extends BaseUI {
       this.searchbar.setFocus();
     });
   }
+  //确认提交
+  showConfirm() {
+    let prompt = this.alertCtrl.create({
+      title: '操作提醒',
+      message: '是否确定要提交？',
+      buttons: [{
+        text: '取消',
+        handler: () => {
+        }
+      }, {
+        text: '确定',
+        handler: () => {          
+            this.save();          
+        }
+      }]
+    });
+    prompt.present();
+  }
   //提交
   save() {
-    if (this.item.parts.length == 0) {
+    if (this.item.length == 0) {
       this.insertError('请先扫描零件号', 'i');
       return;
     };
 
-    if (new Set(this.item.parts).size !== this.item.parts.length) {
+    if (new Set(this.item).size !== this.item.length) {
       this.insertError("明细列表存在重复的零件号，请检查！", 'i');
       return;
     };
     let loading = super.showLoading(this.loadingCtrl, '提交中...');
-    this.api.post('PP/PostPartsStorageIn', this.item).subscribe((res: any) => {
+    this.sheet_list.length = 0;
+    for (let item of this.item) { 
+      this.sheet_list.push(item.sheet_no);
+    }
+    this.api.post('wm/postArrived', this.sheet_list).subscribe((res: any) => {
       if (res.successful) {
         this.insertError('提交成功', 's');
-        this.item.parts = [];
+        this.item.length = 0;
+        this.sheet_list.length = 0;
       }
       else {
         this.insertError('提交失败,' + res.message);
@@ -231,10 +231,8 @@ export class InScanPage extends BaseUI {
       });
     this.resetScan();
   }
-  //下拉框改变
-  changWS(target: string) {
-    this.item.parts = [];
-    this.resetScan();
+  showErr() {
+    this.show = !this.show;
   }
   focusInput = () => {
     this.searchbar.setElementClass('bg-red', false);
@@ -244,20 +242,4 @@ export class InScanPage extends BaseUI {
     this.searchbar.setElementClass('bg-green', false);
     this.searchbar.setElementClass('bg-red', true);
   };
-  returnList() {
-    return [
-      {
-        boxLabel: 'RS1000MC138450701201207D1269',
-        partNo: '8450596',
-        date: new Date(),
-        plant: '柳州龙润汽车零部件制造有限公',
-      },
-      {
-        boxLabel: 'RS1000WK018450704201203D2362',
-        partNo: '8450596',
-        date: new Date(),
-        plant: '柳州龙润汽车零部件制造有限公',
-      }
-    ];
-  }
 }
