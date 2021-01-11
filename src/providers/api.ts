@@ -9,8 +9,8 @@ import { Storage } from "@ionic/storage";
  */
 @Injectable()
 export class Api {
-  public plant: string = '7000';
-  public version: string = 'P-201030';
+  public plant: string = '3000';
+  public version: string = 'P-210106';
   public api_host: string = 'http://10.1.126.171/qdapi';
 
   constructor(public http: HttpClient, public events: Events, public alertCtrl: AlertController, public toastCtrl: ToastController, public storage: Storage) {
@@ -52,6 +52,5 @@ export class Api {
     const url = localStorage.getItem('env');
     return url ? url : this.api_host;
     return this.api_host;
-   // return 'http://192.168.1.6:8100';
   }
 }
