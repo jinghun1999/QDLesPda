@@ -51,6 +51,5 @@ export class Api {
   private getUrl() {
     const url = localStorage.getItem('env');
     return url ? url : this.api_host;
-    return this.api_host;
   }
 }
