@@ -39,7 +39,7 @@ export class LoginPage extends BaseUI {
       {
         id:1,
         "text":"开发环境",
-        "value":'http://192.168.1.6:8100'
+        "value":'http://localhost:49280'
       },
       {
         id:2,
