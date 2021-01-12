@@ -36,57 +36,10 @@ export class CheckJisPage extends BaseUI {
   item: any = {
     jis_no: '',
     rack: '',
+    rack_name:'',
     sheet_c: '',
     parts: []
   };
-  parts: any[] = [{
-    csn: "EDGA000000006",
-    vsn: "C50ADF6PRG19KXC",
-    vin: "LZWADAGA0LF000006",
-    qty: 1,
-    seq: 46,
-    color: "糖果白",
-    car_seq: 6,
-    part_no: "23510940",
-    supplier: "RDC",
-    saned: false
-  },
-  {
-    csn: "EDGA000000006",
-    vsn: "C50ADF6PRG19KXC",
-    vin: "LZWADAGA0LF000006",
-    qty: 1,
-    seq: 46,
-    color: "糖果白",
-    car_seq: 6,
-    part_no: "23510941",
-    supplier: "RDC",
-    saned: false
-  },
-  {
-    csn: "EDGA000000007",
-    vsn: "C50ADF6PRG19KXC",
-    vin: "LZWADAGA0LF0000067",
-    qty: 1,
-    seq: 47,
-    color: "糖果白",
-    car_seq: 7,
-    part_no: "23510942",
-    supplier: "RDC",
-    saned: false
-  },
-  {
-    csn: "EDGA000000007",
-    vsn: "C50ADF6PRG19KXC",
-    vin: "LZWADAGA0LF0000067",
-    qty: 1,
-    seq: 47,
-    color: "糖果白",
-    car_seq: 7,
-    part_no: "23510943",
-    supplier: "RDC",
-    saned: false
-  }];
   constructor(public navParams: NavParams,
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
@@ -150,9 +103,10 @@ export class CheckJisPage extends BaseUI {
       this.api.get('wm/getJISSheet/' + this.label).subscribe((res: any) => {
         if (res.successful) {
           this.item.jis_no = res.data.jis_no;
-          this.item.rack = res.data.reck;
+          this.item.rack = res.data.rack;
+          this.item.rack_name = res.data.rack_name;
           this.item.sheet_c = res.data.sheet_c;
-          this.item.parts = this.parts;
+          this.item.parts = res.data.parts;
         }
         else {
           this.insertError(res.message);
@@ -160,20 +114,24 @@ export class CheckJisPage extends BaseUI {
       });
     } else {
       this.cheakLabel();
-      const scanIndex = this.item.parts.findIndex(p => p.part_no == this.label);
-      if (scanIndex != this.scanOrder) {
+      //const scanIndex = this.item.parts.findIndex(p => p.part_no == this.label);
+      const part = this.item.parts[this.scanOrder];
+      if (part.csn && part.part_no == '') { //空车,不用校验
+
+      }else if (this.item.parts[this.scanOrder].part_no == this.label) { 
         this.insertError('匹配不成功');
         return;
-      }
+      };
+      this.item.parts[this.scanOrder].saned = true;
       this.scanOrder++;
-      this.item.parts[scanIndex].saned = true;
       if (this.scanOrder == this.item.parts.length) {
         let alert = this.alertCtrl.create({
           title: '提示信息',
           subTitle: '校验完成',
           buttons: [{
               text: '确定',
-              handler: () => {
+            handler: () => {
+                //更新
                 this.reset();
               }
             }]
@@ -211,7 +169,7 @@ export class CheckJisPage extends BaseUI {
   cheakLabel() {
     if (!this.label
       || (this.label.substr(0, 2).toUpperCase() !== 'LN' && this.label.substr(0, 2).toUpperCase() !== 'BP')
-      || this.label.length < 13) {
+      || this.label.length < 19) {
       this.insertError('无效的箱标签，请重新扫描');
       this.searchbar.setFocus();
       return;
@@ -234,6 +192,6 @@ export class CheckJisPage extends BaseUI {
       this.searchbar.setFocus();
       return;
     }
-    this.label = this.label.substr(5, 8);
+    this.label = this.label.substr(12, 8);
   }
 }
