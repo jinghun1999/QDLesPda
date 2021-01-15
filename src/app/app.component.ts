@@ -42,7 +42,7 @@ export class MyApp extends BaseUI {
 
 
 
-      if (platform.is('android')) {
+      //if (platform.is('android')) {
          // this.appVersion.getVersionCode().then(res => {
          //   alert(JSON.stringify(res));
          // }).catch(error => {
@@ -56,9 +56,9 @@ export class MyApp extends BaseUI {
          }).catch((e)=>{
            alert('配置错误');
          });*/
-      }else{
+      //}else{
         //super.showToast(this.toastCtrl, 'NOT ANDROID', 'success');
-      }
+     //}
     });
 
   }

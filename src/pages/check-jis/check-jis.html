@@ -8,21 +8,19 @@
     </ion-searchbar>
   </form>
 </ion-header>
-<ion-content>
+<ion-content [ngStyle]="{'opacity':show?'0.4':'1'}" >
   <table style="white-space : nowrap;width: 100%;" border="1">
     <tr>
-      <td>JIS单号</td>
-      <td colspan="4">{{item.jis_no}}</td>
+      <td style="font-weight:bold;">JIS单号</td>
+      <td colspan="3">{{item.jis_no}}</td>
     </tr>
     <tr>
-      <td>料箱代码</td>
-      <td>{{item.rack}}</td>
-      <td>排序类型</td>
-      <td>{{item.rack_name}}</td>
+      <td>料箱代码:&emsp;{{item.rack}}</td>
+      <td>排序类型:&emsp;{{item.rack_name}}</td>
       <td>日计第{{item.sheet_c}}单</td>
     </tr>
   </table> 
-  <div class="ds-box" *ngFor="let part of item.parts;let i=index" [ngStyle]="{'background-color':  scanOrder>i+1 ? 'green' : scanOrder==i+1?'red':''}">
+  <div class="ds-box" *ngFor="let part of item.parts;let i=index" [ngStyle]="{'background-color':  scanOrder>i+1 ? '#b3ffb3' : scanOrder==i+1?'#ff9999':''}">
     <ion-row >
       <ion-col>VSN:{{part.vsn}}&emsp;<span>{{part.color}}</span>&emsp;序号:{{i+1}}<br>CSN:{{part.csn}}&emsp;吊架号:{{part.car_seq}}&emsp;<span >{{part.part_no}}</span>&emsp;数量:{{part.qty}}
       </ion-col>
@@ -33,8 +31,8 @@
   <ion-row *ngIf="!show" (click)="showErr()" >
     <label  class="lbl_err">{{errors[0]?errors[0].message:''}}</label>
   </ion-row>
-  <ion-row *ngIf="show" (click)="showErr()">
-    <message-list [data]="errors"></message-list>
+  <ion-row *ngIf="show" (click)="showErr()" style="text-align: center;height: 8%; background-color: aqua;opacity: 1;">
+    <message-list [data]="errors" style="width: 100%;"></message-list>
   </ion-row>
   <ion-row>
     <button no-margin ion-button full large color="primary" [disabled]="true" (click)="reset()">重置(F1)</button>

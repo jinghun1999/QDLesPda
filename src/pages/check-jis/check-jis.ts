@@ -24,7 +24,6 @@ export class CheckJisPage extends BaseUI {
   label: string = '';                      //记录扫描编号
   barTextHolderText: string = '扫描JIS单号，光标在此处';   //扫描文本框placeholder属性
   keyPressed: any;
-  jis: string = '';
   warehouse_list: any[] = [];//加载获取的的车间列表
   errors: any[] = [];
   plant: string = '';
@@ -32,11 +31,10 @@ export class CheckJisPage extends BaseUI {
   warehouse: string = '';
   scanOrder: number = 0;
   show: boolean = false;
-  JISList: any[] = [];
   item: any = {
     jis_no: '',
     rack: '',
-    rack_name:'',
+    rack_name: '',
     sheet_c: '',
     parts: []
   };
@@ -99,7 +97,17 @@ export class CheckJisPage extends BaseUI {
 
   //扫描执行的过程
   scan() {
-    if (!this.item.parts.length) {   //获取jis单
+    if (!this.label) {
+      this.insertError('无效的箱标签，请重新扫描');
+      this.setReset();
+      return;
+    }
+    if (!this.item.jis_no.length) {   //获取jis单
+      if (!this.label.startsWith('JS')) {
+        this.insertError('请扫描正确的jis单号');
+        return;
+      }
+
       this.api.get('wm/getJISSheet/' + this.label).subscribe((res: any) => {
         if (res.successful) {
           this.item.jis_no = res.data.jis_no;
@@ -113,28 +121,62 @@ export class CheckJisPage extends BaseUI {
         }
       });
     } else {
-      this.cheakLabel();
-      //const scanIndex = this.item.parts.findIndex(p => p.part_no == this.label);
-      const part = this.item.parts[this.scanOrder];
-      if (part.csn && part.part_no == '') { //空车,不用校验
+      if ((this.label.substr(0, 2).toUpperCase() !== 'QD' && this.label.substr(0, 2).toUpperCase() !== 'BP')
+        || this.label.length < 19) {
+        this.insertError('无效的箱标签，请重新扫描');
+        this.setReset();
+        return;
+      }
+      let err = '';
+      let prefix = this.label.substr(0, 2).toUpperCase();
+      if (prefix === 'QD') {
+        if (this.item.parts.findIndex(p => p.label) >= 0) {
+          err = '提交前扫描过保险杠小标签，不能再扫描零件包装标签';
+        }
+      } else if (prefix === 'BP') {
+        if (this.item.parts.findIndex(p => !p.label) >= 0) {
+          err = '提交前扫描过零件包装标签，不能再扫描保险杠小标签';
+        } else if (this.item.parts.findIndex(p => p.label === this.label) >= 0) {
+          err = `标签${this.label}已扫描过，请扫描其他标签`;
+        }
+      }
+      if (err.length) {
+        this.insertError(err);
+        this.searchbar.setFocus();
+        return;
+      }
+      this.label = this.label.substr(11, 8);
 
-      }else if (this.item.parts[this.scanOrder].part_no == this.label) { 
+      let part = this.item.parts[this.scanOrder];
+      if (part.csn && part.part_no == '') { //空车,不用校验
+      } else if (part.part_no != this.label) {
         this.insertError('匹配不成功');
+        this.setReset();
         return;
       };
-      this.item.parts[this.scanOrder].saned = true;
+      part.saned = true;
+      part.scanDate = this.getDate(new Date());
       this.scanOrder++;
       if (this.scanOrder == this.item.parts.length) {
         let alert = this.alertCtrl.create({
           title: '提示信息',
           subTitle: '校验完成',
           buttons: [{
-              text: '确定',
+            text: '确定',
             handler: () => {
-                //更新
-                this.reset();
-              }
-            }]
+              //更新
+              this.api.post('wm/postJisScaned/' + this.item.jis_no, {}).subscribe((res: any) => {
+                if (res.successful) {
+                  this.insertError('已更新', 's');
+                  this.reset();
+                }
+                else { 
+                  this.insertError(res.message);
+                  return;
+                }
+              });
+            }
+          }]
         })
         alert.present();
       }
@@ -144,10 +186,25 @@ export class CheckJisPage extends BaseUI {
   showErr() {
     this.show = !this.show;
   }
+  getDate(date) {
+    let y = date.getFullYear();
+    let m = date.getMonth() + 1;
+    m = m < 10 ? ('0' + m) : m;
+    let d = date.getDate();
+    d = d < 10 ? ('0' + d) : d;
+    let h = date.getHours();
+    h = h < 10 ? ('0' + h) : h;
+    let minute = date.getMinutes();
+    minute = minute < 10 ? ('0' + minute) : minute;
+    let second = date.getSeconds();
+    second = second < 10 ? ('0' + second) : second;
+    return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
+  }
   reset() {
     this.label = '';
     this.item.jis_no = '';
-    this.item.reck = '';
+    this.item.rack = '';
+    this.item.rack_name = '';
     this.item.sheet_c = '';
     this.scanOrder = 0;
     this.item.parts.length = 0;
@@ -168,7 +225,7 @@ export class CheckJisPage extends BaseUI {
   //校验扫描的零件号
   cheakLabel() {
     if (!this.label
-      || (this.label.substr(0, 2).toUpperCase() !== 'LN' && this.label.substr(0, 2).toUpperCase() !== 'BP')
+      || (this.label.substr(0, 2).toUpperCase() !== 'QD' && this.label.substr(0, 2).toUpperCase() !== 'BP')
       || this.label.length < 19) {
       this.insertError('无效的箱标签，请重新扫描');
       this.searchbar.setFocus();
@@ -176,7 +233,7 @@ export class CheckJisPage extends BaseUI {
     }
     let err = '';
     let prefix = this.label.substr(0, 2).toUpperCase();
-    if (prefix === 'LN') {
+    if (prefix === 'QD') {
       if (this.item.parts.findIndex(p => p.label) >= 0) {
         err = '提交前扫描过保险杠小标签，不能再扫描零件包装标签';
       }
