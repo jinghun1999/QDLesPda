@@ -27,6 +27,7 @@ export class CheckJisPage extends BaseUI {
   warehouse_list: any[] = [];//加载获取的的车间列表
   errors: any[] = [];
   plant: string = '';
+  isEnd:boolean=false;
   workshop: string = '';
   warehouse: string = '';
   scanOrder: number = 0;
@@ -157,7 +158,17 @@ export class CheckJisPage extends BaseUI {
       part.saned = true;
       part.scanDate = this.getDate(new Date());
       this.scanOrder++;
-      if (this.scanOrder == this.item.parts.length) {
+      //判断剩下的是否为空车
+      for (let i = this.scanOrder; i < this.item.parts.length, i++) { 
+        if (this.item.parts[i].part.csn && this.item.parts[i].part_no == '') { 
+          this.item.parts[i].saned = true;
+        }
+      }
+
+      //是否全被扫描过
+      this.item.parts.findIndex(p => p.saned == false)==-1 ? this.isEnd = true : '';
+      
+      if (this.scanOrder == this.item.parts.length || this.isEnd) {
         let alert = this.alertCtrl.create({
           title: '提示信息',
           subTitle: '校验完成',

@@ -25,7 +25,11 @@ export class HomePage extends BaseUI {
   workshop: string;
   version: string;
   version_code: number;
-  dasta: any;
+  data: any = {
+    current_version: '',
+    version: '',
+    url: ''
+  };
   url: string;
   constructor(
     public navCtrl: NavController,
@@ -47,26 +51,25 @@ export class HomePage extends BaseUI {
     this.version = this.api.version;
   }
 
-   ionViewDidLoad() {
-     this.getMenus();
-     this.getVersion();
-   }
+  ionViewDidLoad() {
+    this.getMenus();
+  }
   ionViewDidEnter() {
     this.getWorkshop();
-    if (this.plt.is('android')) {
-      this.appVersion.getVersionCode().then(value => {
-        if (this.version_code > value) {
-          this.data.current_version = value;
-          this.data.version = this.version_code;
-          this.data.url = this.url;
-          this.navCtrl.push("UpgradePage", { data: this.data });//跳转到升级页面
-        }
-      })
-    }
-    else { 
-      //console.log(this.version_code);
-      //this.navCtrl.push("UpgradePage", { data: this.data });//跳转到升级页面
-    }
+    // if (this.plt.is('android')) {
+    //   this.getVersion();
+    //   this.appVersion.getVersionCode().then(value => {
+    //     if (this.version_code > value) {
+    //       this.data.current_version = value;
+    //       this.data.version = this.version_code;
+    //       this.data.url = this.url;
+    //       this.navCtrl.push("UpgradePage", {});//跳转到升级页面
+    //     }
+    //   })
+    // }
+    // else {
+      
+    // }
   }
   getWorkshop = () => {
     this.storage.get("workshop").then((res) => {
@@ -100,10 +103,10 @@ export class HomePage extends BaseUI {
     });
   }
   getMenus() {
-    if (this.warehouse) { 
+    if (this.warehouse) {
       return;
     }
-    let loading = super.showLoading(this.loadingCtrl, "加载中...");    
+    let loading = super.showLoading(this.loadingCtrl, "加载中...");
     this.api.get("system/getMenus").subscribe(
       (res: any) => {
         if (res.successful) {

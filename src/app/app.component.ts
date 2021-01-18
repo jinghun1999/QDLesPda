@@ -2,11 +2,11 @@ import { Component, ViewChild } from '@angular/core';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 //import { TranslateService } from '@ngx-translate/core';
-import {Nav, Platform} from 'ionic-angular';
+import { Nav, Platform } from 'ionic-angular';
 //import {Storage} from "@ionic/storage";
-import {LoginPage, HomePage} from '../pages';
+import { LoginPage, HomePage } from '../pages';
 //import {Api} from '../providers';
-import {BaseUI} from "../pages/baseUI";
+import { BaseUI } from "../pages/baseUI";
 //import { AppUpdate } from '@ionic-native/app-update/ngx';
 //import { AppVersion } from '@ionic-native/app-version/ngx';
 
@@ -20,12 +20,12 @@ export class MyApp extends BaseUI {
   @ViewChild(Nav) nav: Nav;
 
   constructor(platform: Platform,
-              private statusBar: StatusBar,
-              //private api: Api,
-              // private appUpdate: AppUpdate,
-              // private appVersion: AppVersion,
-              // private toastCtrl: ToastController,
-              private splashScreen: SplashScreen) {
+    private statusBar: StatusBar,
+    //private api: Api,
+    // private appUpdate: AppUpdate,
+    // private appVersion: AppVersion,
+    // private toastCtrl: ToastController,
+    private splashScreen: SplashScreen) {
     super();
     platform.ready().then(() => {
       this.statusBar.styleDefault();
@@ -43,22 +43,22 @@ export class MyApp extends BaseUI {
 
 
       //if (platform.is('android')) {
-         // this.appVersion.getVersionCode().then(res => {
-         //   alert(JSON.stringify(res));
-         // }).catch(error => {
-         //   alert('错了');
-         // });
+      // this.appVersion.getVersionCode().then(res => {
+      //   alert(JSON.stringify(res));
+      // }).catch(error => {
+      //   alert('错了');
+      // });
 
-         //const updateUrl = this.api.api_host + '/update_apk.xml';
-         //super.showToast(this.toastCtrl, updateUrl, 'success');
-         /*this.appUpdate.checkAppUpdate(updateUrl).then((res)=>{
+      //const updateUrl = this.api.api_host + '/update_apk.xml';
+      //super.showToast(this.toastCtrl, updateUrl, 'success');
+      /*this.appUpdate.checkAppUpdate(updateUrl).then((res)=>{
 
-         }).catch((e)=>{
-           alert('配置错误');
-         });*/
+      }).catch((e)=>{
+        alert('配置错误');
+      });*/
       //}else{
-        //super.showToast(this.toastCtrl, 'NOT ANDROID', 'success');
-     //}
+      //super.showToast(this.toastCtrl, 'NOT ANDROID', 'success');
+      //}
     });
 
   }
