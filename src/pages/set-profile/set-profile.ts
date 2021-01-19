@@ -51,7 +51,8 @@ export class SetProfilePage extends BaseUI {
     });
   }
   save() {
-    this.workshop_shoose = this.list.find((f) => f.value == this.warehouse).children;
+    const workshops = this.list.find((f) => f.value == this.warehouse);
+    this.workshop_shoose = workshops?workshops.children:'';
     this.storage.set('workshop_shoose', this.workshop_shoose).then((res) => {
     }).catch(() => { });
 

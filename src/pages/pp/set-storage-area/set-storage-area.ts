@@ -38,7 +38,9 @@ export class SetStorageAreaPage extends BaseUI {
     });
     let loading = super.showLoading(this.loadingCtrl, "正在加载数据...");
     this.storage.get('workshop_shoose').then(res => {
-      if (res) {
+      if (res === '') { //仓库为空
+        //
+      } else if (res) { 
         this.workshop_choose = res;
       }
     }).catch(e => console.error(e.toString()));

@@ -20,12 +20,12 @@
       <td>日计第{{item.sheet_c}}单</td>
     </tr>
   </table> 
-  <div class="ds-box" *ngFor="let part of item.parts;let i=index" [ngStyle]="{'background-color':  scanOrder>i+1 ? '#b3ffb3' : scanOrder==i+1?'#ff9999':''}">
+  <div class="ds-box" *ngFor="let part of item.parts;let i=index" [ngStyle]="{'background-color': part.san_ing?'#ff9999': part.saned ? '#b3ffb3':''}">
     <ion-row >
       <ion-col>VSN:{{part.vsn}}&emsp;<span>{{part.color}}</span>&emsp;序号:{{i+1}}<br>CSN:{{part.csn}}&emsp;吊架号:{{part.car_seq}}&emsp;<span >{{part.part_no}}</span>&emsp;数量:{{part.qty}}
       </ion-col>
     </ion-row>  
-  </div>    
+  </div>
 </ion-content>
 <ion-footer>
   <ion-row *ngIf="!show" (click)="showErr()" >
@@ -35,6 +35,6 @@
     <message-list [data]="errors" style="width: 100%;"></message-list>
   </ion-row>
   <ion-row>
-    <button no-margin ion-button full large color="primary" [disabled]="true" (click)="reset()">重置(F1)</button>
+    <button no-margin ion-button full large color="primary" [disabled]="!item.parts.length" (click)="confimReset()">重置(F1)</button>
   </ion-row>
 </ion-footer>

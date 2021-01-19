@@ -73,10 +73,13 @@ export class HomePage extends BaseUI {
   }
   getWorkshop = () => {
     this.storage.get("workshop").then((res) => {
-      if (!res) {
-        this.goSetting();
-      } else {
+      if (res === '') { //仓库为空
+        //
+      }
+      else if (res) {
         this.workshop = res;
+      } else {
+        this.goSetting();
       }
     });
   };
