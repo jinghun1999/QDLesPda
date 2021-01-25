@@ -35,9 +35,7 @@ export class SetProfilePage extends BaseUI {
       this.api.get('system/getPlants', { plant: this.plant, type: -1 }).subscribe((res: any) => {
         loading.dismiss();
         if (res.successful) {
-          if (res.data.length == 0) { 
-            this.workshop = '';
-          }
+          
           this.list = res.data;
           this.warehouse_choose = res.data;
         } else {
@@ -51,7 +49,16 @@ export class SetProfilePage extends BaseUI {
     });
   }
   save() {
+    if (this.list && this.list.length) {
+
+    } else { 
+      this.storage.set('warehouse',''); //设置存储区为''
+      this.storage.set('workshop','');//设置仓库为''
+      this.viewCtrl.dismiss();
+      return;
+    }
     const workshops = this.list.find((f) => f.value == this.warehouse);
+    
     this.workshop_shoose = workshops?workshops.children:'';
     this.storage.set('workshop_shoose', this.workshop_shoose).then((res) => {
     }).catch(() => { });

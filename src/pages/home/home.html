@@ -1,5 +1,4 @@
 <ion-header>
-
   <ion-navbar color="primary">
     <ion-title>首页 <small>{{username}}</small></ion-title>
     <ion-buttons end>
@@ -11,22 +10,21 @@
       </button>
     </ion-buttons>
   </ion-navbar>
-
 </ion-header>
-
 <ion-content>
   <ion-grid text-center>
     <ion-row *ngFor="let rowList of getRowListByGridList(3)">
       <ion-col *ngFor="let item of rowList">
         <button (click)="openItem(item)">
-          <p><ion-icon name="{{item.image_url}}" class="ion-icon-big"></ion-icon></p>
+          <p>
+            <ion-icon name="{{item.image_url}}" class="ion-icon-big"></ion-icon>
+          </p>
           <p *ngIf="item.link_url">{{item.menu_name}}</p>
         </button>
       </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
-
 <ion-footer>
   <ion-label text-center>上汽通用五菱青岛物流执行系统 &copy;2021&nbsp;V{{version}}</ion-label>
 </ion-footer>

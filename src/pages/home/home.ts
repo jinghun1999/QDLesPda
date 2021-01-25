@@ -11,7 +11,7 @@ import {
 import { Storage } from "@ionic/storage";
 import { Api, Menus, User } from "../../providers";
 import { BaseUI } from "../";
-import { AppVersion } from '@ionic-native/app-version/ngx';
+import { AppVersion } from '@ionic-native/app-version';
 
 @IonicPage()
 @Component({
@@ -30,10 +30,10 @@ export class HomePage extends BaseUI {
     version: '',
     url: ''
   };
-  url: string;
   constructor(
     public navCtrl: NavController,
     public items: Menus,
+    private appVersion: AppVersion,
     private plt: Platform,
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
@@ -42,7 +42,6 @@ export class HomePage extends BaseUI {
     private app: App,
     private user: User,
     public api: Api,
-    private appVersion: AppVersion
   ) {
     super();
     this.storage.get("USER_INFO").then((res) => {
@@ -52,27 +51,13 @@ export class HomePage extends BaseUI {
   }
 
   ionViewDidLoad() {
-    this.getMenus();
-  }
-  ionViewDidEnter() {
     this.getWorkshop();
-    // if (this.plt.is('android')) {
-    //   this.getVersion();
-    //   this.appVersion.getVersionCode().then(value => {
-    //     if (this.version_code > value) {
-    //       this.data.current_version = value;
-    //       this.data.version = this.version_code;
-    //       this.data.url = this.url;
-    //       this.navCtrl.push("UpgradePage", {});//跳转到升级页面
-    //     }
-    //   })
-    // }
-    // else {
-      
-    // }
+    this.getMenus();
+    this.doUpData();
   }
   getWorkshop = () => {
     this.storage.get("workshop").then((res) => {
+      
       if (res === '') { //仓库为空
         //
       }
@@ -97,35 +82,42 @@ export class HomePage extends BaseUI {
   goSetting() {
     this.navCtrl.push("SettingsPage", {});
   }
-  getVersion() {
-    this.api.get('system/getApkUpdate').subscribe((res: any) => {
-      if (res.successful) {
-        this.version_code = res.data.version;
-        this.url = res.data.url;
-      }
-    });
-  }
   getMenus() {
-    if (this.warehouse) {
-      return;
-    }
     let loading = super.showLoading(this.loadingCtrl, "加载中...");
     this.api.get("system/getMenus").subscribe(
       (res: any) => {
+        loading.dismiss();
         if (res.successful) {
           this.gridList = res.data;
         } else {
           super.showToast(this.toastCtrl, res.message, "error");
         }
-        loading.dismiss();
       },
       (err) => {
-        super.showToast(this.toastCtrl, "系统错误", "error");
         loading.dismiss();
+        super.showToast(this.toastCtrl, "系统错误", "error");
       }
     );
   }
-
+  doUpData() {
+    if (this.plt.is('android')) {
+      this.api.get('system/getApkUpdate').subscribe((res: any) => {
+        if (res.successful) {
+          this.appVersion.getVersionNumber().then(value => {
+            if (res.data.version < value) {
+              this.data.current_version = value;
+              this.data.version = res.data.version;
+              this.data.url = res.data.url;
+              this.navCtrl.push("UpgradePage", { data: this.data });//跳转到升级页面
+            }
+          });
+        }
+        else {
+          console.log(res.message);
+        }
+      })
+    }
+  };
   logout() {
     this.user.logout().subscribe((re) => {
       setTimeout(() => {

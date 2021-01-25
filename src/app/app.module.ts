@@ -8,12 +8,15 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { IonicStorageModule, Storage } from '@ionic/storage';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import {AppUpdate} from "@ionic-native/app-update/ngx";
-import { AppVersion } from '@ionic-native/app-version/ngx';
-import { NativeAudio } from '@ionic-native/native-audio/ngx';
+import {AppVersion} from '@ionic-native/app-version';
+import { AppUpdate } from "@ionic-native/app-update/ngx";
+import { File } from '@ionic-native/file/ngx';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+//import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import { Menus } from '../mocks/menus';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
-import { Settings, User, Api, InterceptorService } from '../providers';
+import { Settings, User, Api } from '../providers';
 import { MyApp } from './app.component';
 import { SuspiciousProvider } from '../providers/suspicious';
 import { ProgressBarModule } from "angular-progress-bar";
@@ -76,16 +79,18 @@ export function provideSettings(storage: Storage) {
     Api,
     Menus,
     User,
+    File,
     Camera,
+    AppVersion,
     SplashScreen,
+    FileTransfer,
+    FileOpener,
+    FileTransferObject,
     StatusBar,
     AppUpdate,
-    AppVersion,
-    NativeAudio,
     { provide: Settings, useFactory: provideSettings, deps: [Storage] },
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler },
-    InterceptorService,
     SuspiciousProvider
   ]
 })

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { UpgradePage } from './upgrade';
+ import { UpgradePage } from './upgrade';
 
 @NgModule({
   declarations: [
@@ -11,3 +11,5 @@ import { UpgradePage } from './upgrade';
   ],
 })
 export class UpgradePageModule {}
+
+

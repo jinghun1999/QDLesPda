@@ -3,7 +3,6 @@ import { IonicPage, NavController, ToastController, LoadingController, AlertCont
 
 import { Api, User } from '../../providers';
 import { HomePage, BaseUI } from '../';
-//import { Storage } from "@ionic/storage";
 
 @IonicPage()
 @Component({
@@ -23,7 +22,6 @@ export class LoginPage extends BaseUI {
   };
 
   constructor(public navCtrl: NavController,
-    //private storage: Storage,
     public user: User,
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
@@ -37,43 +35,40 @@ export class LoginPage extends BaseUI {
     this.setFocus();
     this.environment = [
       {
-        id:1,
-        "text":"开发环境",
-        "value":'http://localhost:49280'
+        id: 1,
+        text: "开发环境",
+        value: 'http://localhost:49280'
       },
       {
-        id:2,
-        text:"测试环境",
-        value:'http://10.1.126.171/qdapi'
+        id: 2,
+        text: "测试环境",
+        value: 'http://10.1.126.171/qdapi'
       },
       {
-        id:3,
-        text:"厂外使用",
-        value:'http://192.168.2.163:49280'
+        id: 3,
+        text: "厂外使用",
+        value: 'http://192.168.2.163:49280'
       },
       {
-        id:4,
-        text:"厂内使用",
-        value:'http://172.168.0.1:49280'
+        id: 4,
+        text: "厂内使用",
+        value: 'http://172.168.0.1:49280'
       }
-    ];    
-    this.gender = this.environment[1].value; 
+    ];
+    let env = localStorage.getItem('qd_env');
+    this.api.api_host = env ? env : this.environment[1].value;
   }
-  //登录的时候存储
-  changWS() {
-    localStorage.removeItem('env');
-    setTimeout(localStorage.setItem('env', this.gender),200);
-  }
-  doLogin() {    
+  
+  doLogin() {
     if (!this.account.name || !this.account.password) {
       super.showToast(this.toastCtrl, '请输入用户名密码');
       this.setFocus();
       return;
-    }    
-    this.changWS();
+    }
+    localStorage.setItem('qd_env',this.api.api_host);
     let loading = super.showLoading(this.loadingCtrl, "登录中...");
     this.user.login(this.account).subscribe((resp) => {
-      loading.dismiss();   
+      loading.dismiss();
       this.navCtrl.setRoot(HomePage, {}, {
         animate: true,
         direction: 'forward'
