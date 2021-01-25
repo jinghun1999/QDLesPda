@@ -116,6 +116,17 @@ export class CheckJisPage extends BaseUI {
           this.item.rack_name = res.data.rack_name;
           this.item.sheet_c = res.data.sheet_c;
           this.item.parts = res.data.parts;
+          //扫描零件之前，判断开头的是否为空白车
+          for (let i = 0; i < this.item.parts.length; i++) {
+            if (this.item.parts[i].part_no == '') {
+              this.item.parts[i].saned = true;
+              this.scanOrder++;
+            }
+            else {
+              break;
+            }
+          }
+          this.item.parts[this.scanOrder].san_ing = true;//下一个要扫描的零件
         }
         else {
           this.insertError(res.message);
@@ -147,49 +158,42 @@ export class CheckJisPage extends BaseUI {
         return;
       }
       this.label = this.label.substr(11, 8);
-      //开始扫描之前，判断开头的是否为空白车
-      if (this.scanOrder == 0) {
-        for (let i = 0; i < this.item.parts.length; i++) {
-          if (this.item.parts[i].part_no == '') {
-            this.item.parts[i].saned = true;
-            this.scanOrder++;
-          }
-          else { 
-            break;
-          }
-        }
-      }     
       let part = this.item.parts[this.scanOrder];
       if (part.part_no == '') { //空车,不用校验
-      } else if (part.part_no != this.label) {
-        this.insertError('匹配不成功');        
+      }
+      else if (part.part_no != this.label) {
+        this.insertError('匹配不成功');
         this.setReset();
         return;
-      };
-      
-      if (this.scanOrder > 0) {
-        for (let i = this.scanOrder; i >=0; i--) { 
-          this.item.parts[i].san_ing = false;
-        }
       }
+      else {
+        this.insertError('匹配成功');
+      };
 
-      part.saned = true; //标记为已扫描
-      part.san_ing = true;//标记为当前扫描
+      part.saned = true; //标记为已扫描      
       part.scanDate = this.getDate(new Date());
       this.scanOrder++;
-      
+      //下一个要扫描零件
+      if (this.scanOrder < this.item.parts.length) {
+        for (let i = this.scanOrder; i >= 0; i--) {
+          this.item.parts[i].san_ing = false;
+        }
+        this.item.parts[this.scanOrder].san_ing = true;
+      }
+
       //判断当前零件后面的是否为空白车,是的话直接跳过
       for (let i = this.scanOrder; i < this.item.parts.length; i++) {
         if (this.item.parts[i].part_no == '') {
           this.item.parts[i].saned = true;
           this.scanOrder++;
         }
-        else { 
+        else {
           break;
         }
       }
+      //扫描完毕
       if (this.scanOrder == this.item.parts.length) {
-        this.item.parts[this.item.parts.length - 1].san_ing=false;
+        this.item.parts[this.item.parts.length - 1].san_ing = false;
         let alert = this.alertCtrl.create({
           title: '提示信息',
           subTitle: '校验完成',
@@ -233,7 +237,7 @@ export class CheckJisPage extends BaseUI {
     second = second < 10 ? ('0' + second) : second;
     return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
   }
-  confimReset() { 
+  confimReset() {
     let alert = this.alertCtrl.create({
       title: '警告信息',
       subTitle: '确认重置吗？已扫描的零件将会无效，数据无法恢复',
@@ -243,10 +247,10 @@ export class CheckJisPage extends BaseUI {
           this.reset();
         }
       }, {
-          text: '取消',
-          handler: () => {
+        text: '取消',
+        handler: () => {
 
-           }
+        }
       }]
     })
     alert.present();

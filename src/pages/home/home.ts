@@ -104,7 +104,7 @@ export class HomePage extends BaseUI {
       this.api.get('system/getApkUpdate').subscribe((res: any) => {
         if (res.successful) {
           this.appVersion.getVersionNumber().then(value => {
-            if (res.data.version < value) {
+            if (res.data.version > value) {
               this.data.current_version = value;
               this.data.version = res.data.version;
               this.data.url = res.data.url;

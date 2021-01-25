@@ -100,7 +100,7 @@ export class MovePage extends BaseUI {
   }
 
   scan() {
-    if (this.label && this.label.length != 24 || this.label.substr(0, 2).toUpperCase() != 'LN') {
+    if (this.label && this.label.length != 24 || this.label.substr(0, 2).toUpperCase() != 'QD') {
       this.insertError('无效的箱标签，请重试');
       this.setFocus();
       return;

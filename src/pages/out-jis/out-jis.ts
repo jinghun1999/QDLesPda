@@ -102,7 +102,7 @@ export class OutJisPage extends BaseUI {
   //扫箱
   scanBox() {
     if (!this.label 
-          || (this.label.substr(0, 2).toUpperCase() !== 'LN' && this.label.substr(0, 2).toUpperCase() !== 'BP') 
+          || (this.label.substr(0, 2).toUpperCase() !== 'QD' && this.label.substr(0, 2).toUpperCase() !== 'BP') 
           || this.label.length < 24) {
       this.insertError('无效的箱标签，请重新扫描');
       this.setFocus();
@@ -110,7 +110,7 @@ export class OutJisPage extends BaseUI {
     }
     let err = '';
     let prefix = this.label.substr(0, 2).toUpperCase();
-    if (prefix === 'LN') {
+    if (prefix === 'QD') {
       if(this.item.parts.findIndex(p => p.label) >= 0) {
         err = '提交前扫描过保险杠小标签，不能再扫描零件包装标签';
       }
@@ -129,7 +129,7 @@ export class OutJisPage extends BaseUI {
 
     let _supplier_number = this.label.substr(2, 9).replace(/(^0*)/, '');
     let _part_num = this.label.substr(11, 8).replace(/(^0*)/, '');
-    if (this.label.substr(0, 2) === 'LN'){
+    if (this.label.substr(0, 2) === 'QD'){
       let i = this.item.parts.findIndex(p => p.part_no === _part_num && p.supplier_id === _supplier_number);
       if (i >= 0) {
         this.moveItem(this.item.parts, i, 0);

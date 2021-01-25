@@ -29,6 +29,7 @@ export class LoginPage extends BaseUI {
     public api: Api) {
     super();
     this.version = this.api.version;
+    this.api.api_host = localStorage.getItem('qd_env');
   }
 
   ionViewDidLoad() {
@@ -55,8 +56,7 @@ export class LoginPage extends BaseUI {
         value: 'http://172.168.0.1:49280'
       }
     ];
-    let env = localStorage.getItem('qd_env');
-    this.api.api_host = env ? env : this.environment[1].value;
+    this.api.api_host ? null :this.api.api_host= this.environment[1].value;
   }
   
   doLogin() {

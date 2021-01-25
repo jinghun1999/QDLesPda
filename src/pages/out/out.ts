@@ -118,16 +118,16 @@ export class OutPage extends BaseUI {
 
       let prefix = this.code.substr(0, 2).toUpperCase();
 
-      if (prefix != 'RS' && prefix != 'JY' && prefix != 'LN') {
+      if (prefix != 'RS' && prefix != 'JY' && prefix != 'QD') {
         err = '无效的扫描，请重试！';
         this.insertError(err);
-      } else if (prefix == 'LN' && this.scanFlag == 0) {
+      } else if (prefix == 'QD' && this.scanFlag == 0) {
         err = '请先扫单据二维码！';
         this.insertError(err);
-      } else if (prefix == 'LN' && this.scanFlag == 1 && !this.sheet.is_scanbox) {
+      } else if (prefix == 'QD' && this.scanFlag == 1 && !this.sheet.is_scanbox) {
         err = '该单据不需要扫料箱！';
         this.insertError(err);
-      } else if (prefix === 'LN' && this.code.length != 24) {
+      } else if (prefix === 'QD' && this.code.length != 24) {
         err = '箱标签格式不正确';
         this.insertError(err);
       }
