@@ -57,16 +57,12 @@ export class LoginPage extends BaseUI {
         value:'http://172.168.0.1:49280'
       }
     ];    
-    //this.gender = this.environment[1].value;  
-    if (!this.gender) { 
-      this.gender = this.environment[1].value; 
-    }
+    this.gender = this.environment[1].value; 
   }
   //登录的时候存储
   changWS() {
     localStorage.removeItem('env');
     setTimeout(localStorage.setItem('env', this.gender),200);
-    ;
   }
   doLogin() {    
     if (!this.account.name || !this.account.password) {

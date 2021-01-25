@@ -6,11 +6,12 @@ import {
   ModalController,
   NavController,
   ToastController,
+  Platform
 } from "ionic-angular";
 import { Storage } from "@ionic/storage";
 import { Api, Menus, User } from "../../providers";
 import { BaseUI } from "../";
-//import { l } from "@angular/core/src/render3";
+import { AppVersion } from '@ionic-native/app-version/ngx';
 
 @IonicPage()
 @Component({
@@ -18,24 +19,30 @@ import { BaseUI } from "../";
   templateUrl: "home.html",
 })
 export class HomePage extends BaseUI {
-  //currentItems: Menu[];
-  //gridList: Menu[];
   gridList: any[] = [];
   warehouse: string;
   username: string;
   workshop: string;
   version: string;
-
+  version_code: number;
+  data: any = {
+    current_version: '',
+    version: '',
+    url: ''
+  };
+  url: string;
   constructor(
     public navCtrl: NavController,
     public items: Menus,
+    private plt: Platform,
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
     public modalCtrl: ModalController,
     private storage: Storage,
     private app: App,
     private user: User,
-    public api: Api
+    public api: Api,
+    private appVersion: AppVersion
   ) {
     super();
     this.storage.get("USER_INFO").then((res) => {
@@ -44,18 +51,35 @@ export class HomePage extends BaseUI {
     this.version = this.api.version;
   }
 
-   ionViewDidLoad() {
+  ionViewDidLoad() {
     this.getMenus();
-   }
+  }
   ionViewDidEnter() {
     this.getWorkshop();
+    // if (this.plt.is('android')) {
+    //   this.getVersion();
+    //   this.appVersion.getVersionCode().then(value => {
+    //     if (this.version_code > value) {
+    //       this.data.current_version = value;
+    //       this.data.version = this.version_code;
+    //       this.data.url = this.url;
+    //       this.navCtrl.push("UpgradePage", {});//跳转到升级页面
+    //     }
+    //   })
+    // }
+    // else {
+      
+    // }
   }
   getWorkshop = () => {
     this.storage.get("workshop").then((res) => {
-      if (!res) {
-        this.goSetting();
-      } else {
+      if (res === '') { //仓库为空
+        //
+      }
+      else if (res) {
         this.workshop = res;
+      } else {
+        this.goSetting();
       }
     });
   };
@@ -73,11 +97,19 @@ export class HomePage extends BaseUI {
   goSetting() {
     this.navCtrl.push("SettingsPage", {});
   }
+  getVersion() {
+    this.api.get('system/getApkUpdate').subscribe((res: any) => {
+      if (res.successful) {
+        this.version_code = res.data.version;
+        this.url = res.data.url;
+      }
+    });
+  }
   getMenus() {
-    if (this.warehouse) { 
+    if (this.warehouse) {
       return;
     }
-    let loading = super.showLoading(this.loadingCtrl, "加载中...");    
+    let loading = super.showLoading(this.loadingCtrl, "加载中...");
     this.api.get("system/getMenus").subscribe(
       (res: any) => {
         if (res.successful) {

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, LoadingController, NavController, NavParams, ToastController, ModalController,ViewController } from 'ionic-angular';
+import { IonicPage, LoadingController, NavController, NavParams, ToastController, ModalController, ViewController } from 'ionic-angular';
 import { Storage } from "@ionic/storage";
 import { BaseUI } from "../";
 import { Api } from "../../providers";
@@ -17,7 +17,7 @@ export class SetProfilePage extends BaseUI {
   warehouse: any;  //仓库
   workshop: any; //存储区
   workshop_shoose: any[] = [];// 存储区列表
-  data: any={ };
+  data: any = {};
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private storage: Storage,
     public toastCtrl: ToastController,
@@ -35,6 +35,9 @@ export class SetProfilePage extends BaseUI {
       this.api.get('system/getPlants', { plant: this.plant, type: -1 }).subscribe((res: any) => {
         loading.dismiss();
         if (res.successful) {
+          if (res.data.length == 0) { 
+            this.workshop = '';
+          }
           this.list = res.data;
           this.warehouse_choose = res.data;
         } else {
@@ -48,14 +51,15 @@ export class SetProfilePage extends BaseUI {
     });
   }
   save() {
-    this.workshop_shoose = this.list.find((f) => f.value == this.warehouse).children;
+    const workshops = this.list.find((f) => f.value == this.warehouse);
+    this.workshop_shoose = workshops?workshops.children:'';
     this.storage.set('workshop_shoose', this.workshop_shoose).then((res) => {
     }).catch(() => { });
 
     this.data.warehouse = this.warehouse;
     this.data.workshop_shoose = this.workshop_shoose;
     this.storage.set('warehouse', this.warehouse).then((res) => {
-      this.viewCtrl.dismiss(this.data);      
+      this.viewCtrl.dismiss(this.data);
     }).catch(() => { });
   }
   cancel() {

@@ -8,15 +8,15 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { IonicStorageModule, Storage } from '@ionic/storage';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import {AppUpdate} from "@ionic-native/app-update/ngx";
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import { Menus } from '../mocks/menus';
+import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { Settings, User, Api, InterceptorService } from '../providers';
 import { MyApp } from './app.component';
 import { SuspiciousProvider } from '../providers/suspicious';
-
+import { ProgressBarModule } from "angular-progress-bar";
 // The translate loader needs to know where to load i18n files
 // in Ionic's static asset pipeline.
 export function createTranslateLoader(http: HttpClient) {
@@ -60,7 +60,8 @@ export function provideSettings(storage: Storage) {
       }
     }),
     IonicModule.forRoot(MyApp),
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
+    ProgressBarModule
   ],
   // bootstrap: 数组类型选项, 指定了这个模块启动的时候应该启动的组件.当然这些组件会被自动的加入到entryComponents中去
   bootstrap: [IonicApp],

@@ -24,69 +24,21 @@ export class CheckJisPage extends BaseUI {
   label: string = '';                      //记录扫描编号
   barTextHolderText: string = '扫描JIS单号，光标在此处';   //扫描文本框placeholder属性
   keyPressed: any;
-  jis: string = '';
   warehouse_list: any[] = [];//加载获取的的车间列表
   errors: any[] = [];
   plant: string = '';
+  isEnd: boolean = false;
   workshop: string = '';
   warehouse: string = '';
   scanOrder: number = 0;
   show: boolean = false;
-  JISList: any[] = [];
   item: any = {
     jis_no: '',
     rack: '',
+    rack_name: '',
     sheet_c: '',
     parts: []
   };
-  parts: any[] = [{
-    csn: "EDGA000000006",
-    vsn: "C50ADF6PRG19KXC",
-    vin: "LZWADAGA0LF000006",
-    qty: 1,
-    seq: 46,
-    color: "糖果白",
-    car_seq: 6,
-    part_no: "23510940",
-    supplier: "RDC",
-    saned: false
-  },
-  {
-    csn: "EDGA000000006",
-    vsn: "C50ADF6PRG19KXC",
-    vin: "LZWADAGA0LF000006",
-    qty: 1,
-    seq: 46,
-    color: "糖果白",
-    car_seq: 6,
-    part_no: "23510941",
-    supplier: "RDC",
-    saned: false
-  },
-  {
-    csn: "EDGA000000007",
-    vsn: "C50ADF6PRG19KXC",
-    vin: "LZWADAGA0LF0000067",
-    qty: 1,
-    seq: 47,
-    color: "糖果白",
-    car_seq: 7,
-    part_no: "23510942",
-    supplier: "RDC",
-    saned: false
-  },
-  {
-    csn: "EDGA000000007",
-    vsn: "C50ADF6PRG19KXC",
-    vin: "LZWADAGA0LF0000067",
-    qty: 1,
-    seq: 47,
-    color: "糖果白",
-    car_seq: 7,
-    part_no: "23510943",
-    supplier: "RDC",
-    saned: false
-  }];
   constructor(public navParams: NavParams,
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
@@ -146,50 +98,164 @@ export class CheckJisPage extends BaseUI {
 
   //扫描执行的过程
   scan() {
-    if (!this.item.parts.length) {   //获取jis单
+    if (!this.label) {
+      this.insertError('无效的箱标签，请重新扫描');
+      this.setReset();
+      return;
+    }
+    if (!this.item.jis_no.length) {   //获取jis单
+      if (!this.label.startsWith('JS')) {
+        this.insertError('请扫描正确的jis单号');
+        return;
+      }
+
       this.api.get('wm/getJISSheet/' + this.label).subscribe((res: any) => {
         if (res.successful) {
           this.item.jis_no = res.data.jis_no;
-          this.item.rack = res.data.reck;
+          this.item.rack = res.data.rack;
+          this.item.rack_name = res.data.rack_name;
           this.item.sheet_c = res.data.sheet_c;
-          this.item.parts = this.parts;
+          this.item.parts = res.data.parts;
         }
         else {
           this.insertError(res.message);
         }
       });
     } else {
-      this.cheakLabel();
-      const scanIndex = this.item.parts.findIndex(p => p.part_no == this.label);
-      if (scanIndex != this.scanOrder) {
-        this.insertError('匹配不成功');
+      let err = '';
+      if ((this.label.substr(0, 2).toUpperCase() !== 'QD' && this.label.substr(0, 2).toUpperCase() !== 'BP')
+        || this.label.length < 19) {
+        err = '无效的箱标签，请重新扫描';
+      }
+
+      let prefix = this.label.substr(0, 2).toUpperCase();
+      if (prefix === 'QD') {
+        if (this.item.parts.findIndex(p => p.label) >= 0) {
+          err = '提交前扫描过保险杠小标签，不能再扫描零件包装标签';
+        }
+      } else if (prefix === 'BP') {
+        if (this.item.parts.findIndex(p => !p.label) >= 0) {
+          err = '提交前扫描过零件包装标签，不能再扫描保险杠小标签';
+        } else if (this.item.parts.findIndex(p => p.label === this.label) >= 0) {
+          err = `标签${this.label}已扫描过，请扫描其他标签`;
+        }
+      }
+      if (err.length) {
+        this.insertError(err);
+        this.setReset();
+        this.searchbar.setFocus();
         return;
       }
+      this.label = this.label.substr(11, 8);
+      //开始扫描之前，判断开头的是否为空白车
+      if (this.scanOrder == 0) {
+        for (let i = 0; i < this.item.parts.length; i++) {
+          if (this.item.parts[i].part_no == '') {
+            this.item.parts[i].saned = true;
+            this.scanOrder++;
+          }
+          else { 
+            break;
+          }
+        }
+      }     
+      let part = this.item.parts[this.scanOrder];
+      if (part.part_no == '') { //空车,不用校验
+      } else if (part.part_no != this.label) {
+        this.insertError('匹配不成功');        
+        this.setReset();
+        return;
+      };
+      
+      if (this.scanOrder > 0) {
+        for (let i = this.scanOrder; i >=0; i--) { 
+          this.item.parts[i].san_ing = false;
+        }
+      }
+
+      part.saned = true; //标记为已扫描
+      part.san_ing = true;//标记为当前扫描
+      part.scanDate = this.getDate(new Date());
       this.scanOrder++;
-      this.item.parts[scanIndex].saned = true;
+      
+      //判断当前零件后面的是否为空白车,是的话直接跳过
+      for (let i = this.scanOrder; i < this.item.parts.length; i++) {
+        if (this.item.parts[i].part_no == '') {
+          this.item.parts[i].saned = true;
+          this.scanOrder++;
+        }
+        else { 
+          break;
+        }
+      }
       if (this.scanOrder == this.item.parts.length) {
+        this.item.parts[this.item.parts.length - 1].san_ing=false;
         let alert = this.alertCtrl.create({
           title: '提示信息',
           subTitle: '校验完成',
           buttons: [{
-              text: '确定',
-              handler: () => {
-                this.reset();
-              }
-            }]
+            text: '确定',
+            handler: () => {
+              //更新
+              this.api.post('wm/postJisScaned/' + this.item.jis_no, {}).subscribe((res: any) => {
+                if (res.successful) {
+                  this.insertError('已更新', 's');
+                  this.reset();
+                }
+                else {
+                  this.insertError(res.message);
+                  return;
+                }
+              });
+            }
+          }]
         })
         alert.present();
       }
+      this.setReset();
     }
     this.setReset();
   }
   showErr() {
     this.show = !this.show;
   }
+  getDate(date) {
+    let y = date.getFullYear();
+    let m = date.getMonth() + 1;
+    m = m < 10 ? ('0' + m) : m;
+    let d = date.getDate();
+    d = d < 10 ? ('0' + d) : d;
+    let h = date.getHours();
+    h = h < 10 ? ('0' + h) : h;
+    let minute = date.getMinutes();
+    minute = minute < 10 ? ('0' + minute) : minute;
+    let second = date.getSeconds();
+    second = second < 10 ? ('0' + second) : second;
+    return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
+  }
+  confimReset() { 
+    let alert = this.alertCtrl.create({
+      title: '警告信息',
+      subTitle: '确认重置吗？已扫描的零件将会无效，数据无法恢复',
+      buttons: [{
+        text: '确定',
+        handler: () => {
+          this.reset();
+        }
+      }, {
+          text: '取消',
+          handler: () => {
+
+           }
+      }]
+    })
+    alert.present();
+  }
   reset() {
     this.label = '';
     this.item.jis_no = '';
-    this.item.reck = '';
+    this.item.rack = '';
+    this.item.rack_name = '';
     this.item.sheet_c = '';
     this.scanOrder = 0;
     this.item.parts.length = 0;
@@ -206,34 +272,5 @@ export class CheckJisPage extends BaseUI {
   setReset() {
     this.label = '';
     this.searchbar.setFocus();
-  }
-  //校验扫描的零件号
-  cheakLabel() {
-    if (!this.label
-      || (this.label.substr(0, 2).toUpperCase() !== 'LN' && this.label.substr(0, 2).toUpperCase() !== 'BP')
-      || this.label.length < 13) {
-      this.insertError('无效的箱标签，请重新扫描');
-      this.searchbar.setFocus();
-      return;
-    }
-    let err = '';
-    let prefix = this.label.substr(0, 2).toUpperCase();
-    if (prefix === 'LN') {
-      if (this.item.parts.findIndex(p => p.label) >= 0) {
-        err = '提交前扫描过保险杠小标签，不能再扫描零件包装标签';
-      }
-    } else if (prefix === 'BP') {
-      if (this.item.parts.findIndex(p => !p.label) >= 0) {
-        err = '提交前扫描过零件包装标签，不能再扫描保险杠小标签';
-      } else if (this.item.parts.findIndex(p => p.label === this.label) >= 0) {
-        err = `标签${this.label}已扫描过，请扫描其他标签`;
-      }
-    }
-    if (err.length) {
-      this.insertError(err);
-      this.searchbar.setFocus();
-      return;
-    }
-    this.label = this.label.substr(5, 8);
   }
 }

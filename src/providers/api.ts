@@ -11,7 +11,7 @@ import { Storage } from "@ionic/storage";
 export class Api {
   public plant: string = '3000';
   public version: string = 'P-210106';
-  public api_host: string = 'http://10.1.126.171/qdapi';
+  //public api_host: string = 'http://10.1.126.171/qdapi';
 
   constructor(public http: HttpClient, public events: Events, public alertCtrl: AlertController, public toastCtrl: ToastController, public storage: Storage) {
     
@@ -49,7 +49,6 @@ export class Api {
     return this.http.patch(this.getUrl() + '/api' + '/' + endpoint, body, reqOpts);
   }
   private getUrl() {
-    const url = localStorage.getItem('env');
-    return url ? url : this.api_host;
+    return localStorage.getItem('env');
   }
 }
