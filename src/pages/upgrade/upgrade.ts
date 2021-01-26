@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { File } from '@ionic-native/file/ngx';
-import { FileOpener } from '@ionic-native/file-opener/ngx';
-import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+import { File } from '@ionic-native/file';
+import { FileOpener } from '@ionic-native/file-opener';
+import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 
 @IonicPage()
 @Component({
@@ -20,12 +20,12 @@ export class UpgradePage {
     this.data = this.navParams.get('data');
   }
   downloadApp() {
-    const { url, version,current_version } = this.data;
+    const { url } = this.data;
     // 4.下载apk
     // const targetUrl = 'http://127.0.0.1:8080/test.apk';
     const fileTransfer: FileTransferObject = this.transfer.create();
 
-    console.log(this.file.dataDirectory);
+    alert(this.file.dataDirectory);
     // 获取当前应用的安装（home）目录
     // 1、应用包名称要一致
     // 2、升级的包的版本号要大于当前应用的版本号
@@ -44,7 +44,7 @@ export class UpgradePage {
       alert(JSON.stringify(error));
     });
 
-    // 5、获取下载进度
+    // // 5、获取下载进度
     const oProgressNum = document.getElementById('progressnum');
     fileTransfer.onProgress((event) => {
       const num = Math.ceil(event.loaded / event.total * 100);  // 转化成1-100的进度

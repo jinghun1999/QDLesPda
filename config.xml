@@ -106,9 +106,5 @@
     <engine name="android" spec="7.1.4" />
     <allow-navigation href="http://192.168.137.229:8100" />
     <allow-navigation href="http://192.168.137.229:8101" />
-<<<<<<< HEAD
-    <allow-navigation href="http://192.168.137.182:8100" />
-=======
     <allow-navigation href="http://localhost:8100" sessionid="0949e9fd" />
->>>>>>> 31b68e0eb2837c472094fb9a8d7f3160d595fd49
 </widget>

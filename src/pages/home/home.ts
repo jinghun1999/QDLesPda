@@ -25,11 +25,6 @@ export class HomePage extends BaseUI {
   workshop: string;
   version: string;
   version_code: number;
-  data: any = {
-    current_version: '',
-    version: '',
-    url: ''
-  };
   constructor(
     public navCtrl: NavController,
     public items: Menus,
@@ -98,21 +93,27 @@ export class HomePage extends BaseUI {
   }
   doUpData() {
     if (this.plt.is('android')) {
-      this.api.get('system/getApkUpdate').subscribe((res: any) => {
-        if (res.successful) {
-          this.appVersion.getVersionNumber().then(value => {
-            if (res.data.version > value) {
-              this.data.current_version = value;
-              this.data.version = res.data.version;
-              this.data.url = res.data.url;
-              this.navCtrl.push("UpgradePage", { data: this.data });//跳转到升级页面
-            }
-          });
-        }
-        else {
-          console.log(res.message);
-        }
-      })
+      let t = this;
+      this.appVersion.getVersionNumber().then(ver => {
+        t.api.get('system/getApkUpdate').subscribe((res: any) => {
+          //alert(JSON.stringify(res.data))
+          if (res.data.version > ver) {
+            let dt = {
+              current_version: ver,
+              version: res.data.version,
+              url: res.data.url
+            };
+            //t.navCtrl.push("UpgradePage", { data: t.data });//跳转到升级页面
+            t.app.getRootNav().setRoot(
+              "UpgradePage", {data: dt},
+              {
+                animate: true,
+                direction: "forward",
+              }
+            );
+          }
+        });
+      });
     }
   };
   logout() {

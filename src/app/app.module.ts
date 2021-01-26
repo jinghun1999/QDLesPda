@@ -10,9 +10,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import {AppVersion} from '@ionic-native/app-version';
 import { AppUpdate } from "@ionic-native/app-update/ngx";
-import { File } from '@ionic-native/file/ngx';
-import { FileOpener } from '@ionic-native/file-opener/ngx';
-import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import { Menus } from '../mocks/menus';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
@@ -79,14 +77,10 @@ export function provideSettings(storage: Storage) {
     Api,
     Menus,
     User,
-    File,
     Camera,
     AppVersion,
     SplashScreen,
     NativeAudio,
-    FileTransfer,
-    FileOpener,
-    FileTransferObject,
     StatusBar,
     AppUpdate,
     { provide: Settings, useFactory: provideSettings, deps: [Storage] },
