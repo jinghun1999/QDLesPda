@@ -98,25 +98,21 @@ export class HomePage extends BaseUI {
   }
   doUpData() {
     if (this.plt.is('android')) {
-      this.appVersion.getVersionNumber().then((vc) => {
-        alert(vc); 
-      });
-      // return;
-      // this.api.get('system/getApkUpdate').subscribe((res: any) => {
-      //   if (res.successful) {
-      //     this.appVersion.getVersionNumber().then(value => {
-      //       if (res.data.version < value) {
-      //         this.data.current_version = value;
-      //         this.data.version = res.data.version;
-      //         this.data.url = res.data.url;
-      //         this.navCtrl.push("UpgradePage", { data: this.data });//跳转到升级页面
-      //       }
-      //     });
-      //   }
-      //   else {
-      //     console.log(res.message);
-      //   }
-      // })
+      this.api.get('system/getApkUpdate').subscribe((res: any) => {
+        if (res.successful) {
+          this.appVersion.getVersionNumber().then(value => {
+            if (res.data.version > value) {
+              this.data.current_version = value;
+              this.data.version = res.data.version;
+              this.data.url = res.data.url;
+              this.navCtrl.push("UpgradePage", { data: this.data });//跳转到升级页面
+            }
+          });
+        }
+        else {
+          console.log(res.message);
+        }
+      })
     }
   };
   logout() {

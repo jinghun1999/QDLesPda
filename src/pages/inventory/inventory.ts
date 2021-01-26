@@ -83,7 +83,7 @@ export class InventoryPage extends BaseUI {
       err = '请扫描正确的零件箱标签';
     } else {
       let prefix = this.label.substr(0, 2).toUpperCase();
-      if (prefix != 'LN') {
+      if (prefix != 'QD') {
         err = '无效的扫描，请重试！';
       }
     }

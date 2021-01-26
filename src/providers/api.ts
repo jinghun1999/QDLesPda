@@ -13,7 +13,8 @@ export class Api {
   public version: string = 'P-210106';
   public api_host: string;  //api接口地址，在login.ts配置
 
-  constructor(public http: HttpClient, public events: Events,public alertCtrl: AlertController, public toastCtrl: ToastController, public storage: Storage) {
+  constructor(public http: HttpClient, public events: Events, public alertCtrl: AlertController, public toastCtrl: ToastController, public storage: Storage) {
+    this.api_host = localStorage.getItem('qd_env');
   }
   get(endpoint: string, params?: any, reqOpts?: any) {
     if (!reqOpts) {

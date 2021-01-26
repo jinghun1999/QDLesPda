@@ -105,7 +105,7 @@ export class SuspiciousAddPage extends BaseUI {
 
   search() {
     let err = '';
-    if (!this.label || this.label.length != 24 || this.label.substr(0, 2).toUpperCase() != 'LN') {
+    if (!this.label || this.label.length != 24 || this.label.substr(0, 2).toUpperCase() != 'QD') {
       err = '无效的箱标签，请重新扫描';
       this.insertError(err);
     }
