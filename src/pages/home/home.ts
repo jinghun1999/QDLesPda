@@ -51,9 +51,9 @@ export class HomePage extends BaseUI {
   }
 
   ionViewDidLoad() {
+    this.doUpData();
     this.getWorkshop();
     this.getMenus();
-    this.doUpData();
   }
   getWorkshop = () => {
     this.storage.get("workshop").then((res) => {
@@ -84,20 +84,17 @@ export class HomePage extends BaseUI {
   }
   getMenus() {
     let loading = super.showLoading(this.loadingCtrl, "加载中...");
-    this.api.get("system/getMenus").subscribe(
-      (res: any) => {
-        loading.dismiss();
-        if (res.successful) {
-          this.gridList = res.data;
-        } else {
-          super.showToast(this.toastCtrl, res.message, "error");
-        }
-      },
-      (err) => {
-        loading.dismiss();
-        super.showToast(this.toastCtrl, "系统错误", "error");
+    this.api.get("system/getMenus").subscribe((res: any) => {
+      loading.dismiss();
+      if (res.successful) {
+        this.gridList = res.data;
+      } else {
+        super.showToast(this.toastCtrl, res.message, "error");
       }
-    );
+    }, (err) => {
+      loading.dismiss();
+      super.showToast(this.toastCtrl, "系统错误", "error");
+    });
   }
   doUpData() {
     if (this.plt.is('android')) {
