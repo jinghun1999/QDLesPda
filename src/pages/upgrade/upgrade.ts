@@ -24,8 +24,6 @@ export class UpgradePage {
     // 4.下载apk
     // const targetUrl = 'http://127.0.0.1:8080/test.apk';
     const fileTransfer: FileTransferObject = this.transfer.create();
-
-    alert(this.file.dataDirectory);
     // 获取当前应用的安装（home）目录
     // 1、应用包名称要一致
     // 2、升级的包的版本号要大于当前应用的版本号
