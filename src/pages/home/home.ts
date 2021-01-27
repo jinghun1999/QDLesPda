@@ -6,7 +6,8 @@ import {
   ModalController,
   NavController,
   ToastController,
-  Platform
+  Platform,
+  ActionSheetController
 } from "ionic-angular";
 import { Storage } from "@ionic/storage";
 import { Api, Menus, User } from "../../providers";
@@ -20,10 +21,12 @@ import { AppVersion } from '@ionic-native/app-version';
 })
 export class HomePage extends BaseUI {
   gridList: any[] = [];
-  warehouse: string;
+  warehouse: string; //仓库
   username: string;
-  workshop: string;
+  workshop: string;//存储区
   version: string;
+  selectLevel: number = 1;
+  now_txt: string;
   version_code: number;
   constructor(
     public navCtrl: NavController,
@@ -47,19 +50,22 @@ export class HomePage extends BaseUI {
 
   ionViewDidLoad() {
     this.doUpData();
-    this.getWorkshop();
     this.getMenus();
+  }
+  ionViewDidEnter() {
+    this.getWorkshop();
   }
   getWorkshop = () => {
     this.storage.get("workshop").then((res) => {
-      
+
       if (res === '') { //仓库为空
         //
       }
       else if (res) {
         this.workshop = res;
       } else {
-        this.goSetting();
+        //this.goSetting();
+        this.change();
       }
     });
   };
@@ -105,7 +111,7 @@ export class HomePage extends BaseUI {
             };
             //t.navCtrl.push("UpgradePage", { data: t.data });//跳转到升级页面
             t.app.getRootNav().setRoot(
-              "UpgradePage", {data: dt},
+              "UpgradePage", { data: dt },
               {
                 animate: true,
                 direction: "forward",
@@ -132,5 +138,30 @@ export class HomePage extends BaseUI {
         alert("注销失败");
       }
     );
+  }
+  //选择仓库
+  change() {
+    let addModal = this.modalCtrl.create('SetProfilePage', {},);
+    addModal.onDidDismiss(ds => {
+      if (ds) {
+        this.warehouse = ds.warehouse;
+        this.setStoeaArea(this.warehouse);
+      }
+    })
+    addModal.present();
+  }
+  //选择存储区
+  setStoeaArea(warehouse) {
+    if (!this.warehouse) {
+      alert('请先选择仓库');
+      return;
+    }
+    let addModal = this.modalCtrl.create("SetStorageAreaPage", { warehouse: warehouse });
+    addModal.onDidDismiss((item) => {
+      if (item) {
+        this.workshop = item;
+      }
+    });
+    addModal.present();
   }
 }

@@ -39,16 +39,6 @@ export class SettingsPage extends BaseUI {
   ngOnChanges() {
 
   }
-  change() {
-    let addModal = this.modalCtrl.create('SetProfilePage', {},);
-    addModal.onDidDismiss(ds => {
-      if (ds) {
-        this.data.warehouse = ds.warehouse;
-        this.setStoeaArea(this.data.warehouse);
-      }
-    })
-    addModal.present();
-  }
   logout() {
     this.user.logout().subscribe((re) => {
       setTimeout(() => {
@@ -60,18 +50,5 @@ export class SettingsPage extends BaseUI {
     }, (r) => {
       alert('注销失败');
     });
-  }
-  setStoeaArea(warehouse) {
-    if (!this.data.warehouse) {
-      alert('请先选择仓库');
-      return;
-    }
-    let addModal = this.modalCtrl.create("SetStorageAreaPage", { warehouse: warehouse });
-    addModal.onDidDismiss((item) => {
-      if (item) {
-        this.data.workshop = item;
-      }
-    });
-    addModal.present();
   }
 }

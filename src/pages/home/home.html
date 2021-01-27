@@ -12,6 +12,10 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
+  <ion-chip outline color="" (click)="change()">
+    <ion-icon name="pin"></ion-icon>
+    <ion-label>当前作业区域：{{workshop}}</ion-label>
+  </ion-chip>
   <ion-grid text-center>
     <ion-row *ngFor="let rowList of getRowListByGridList(3)">
       <ion-col *ngFor="let item of rowList">

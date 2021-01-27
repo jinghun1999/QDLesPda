@@ -48,6 +48,11 @@ export class SetProfilePage extends BaseUI {
         });
     });
   }
+  ionViewDidEnter(){
+    this.storage.get('warehouse').then(val => { 
+      this.warehouse = val;
+    });
+  }
   save() {
     if (this.list && this.list.length) {
 
@@ -58,7 +63,6 @@ export class SetProfilePage extends BaseUI {
       return;
     }
     const workshops = this.list.find((f) => f.value == this.warehouse);
-    
     this.workshop_shoose = workshops?workshops.children:'';
     this.storage.set('workshop_shoose', this.workshop_shoose).then((res) => {
     }).catch(() => { });

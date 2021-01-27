@@ -28,18 +28,8 @@
   <h3 padding-left>选择默认存储区</h3>
   <ion-list radio-group [(ngModel)]="workshop">
     <ion-item *ngFor="let item of workshop_choose">
-      <ion-label>{{item.text}}</ion-label>
-      <ion-radio value="{{item.value}}"></ion-radio>
+      <ion-label >{{item.text}}</ion-label>
+      <ion-radio (click)="save()"  value="{{item.value}}"></ion-radio>
     </ion-item>
   </ion-list>
 </ion-content>
-<ion-footer>
-  <ion-row>
-    <ion-col no-padding hidden>
-      <button no-margin ion-button full large color="light" (click)="cancel()">取消</button>
-    </ion-col>
-    <ion-col no-padding>
-      <button no-margin ion-button full large color="primary" (click)="save()">保存更改</button>
-    </ion-col>
-  </ion-row>
-</ion-footer>

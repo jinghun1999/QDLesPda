@@ -13,16 +13,6 @@
       <ion-label>当前工厂</ion-label>
       <ion-note item-end>{{data.plant}}</ion-note>
     </ion-item>
-    <ion-item (click)="change()">
-      <ion-icon name="ios-grid" item-start></ion-icon>
-      <ion-label color="primary">仓库</ion-label>
-      <ion-note item-end class="note note-md">{{data.warehouse}}</ion-note>
-    </ion-item>
-    <ion-item (click)="setStoeaArea(data.warehouse)" >
-      <ion-icon name="md-albums" item-start></ion-icon>
-      <ion-label color="primary">存储区</ion-label>
-      <ion-note item-end class="note note-md">{{data.workshop}}</ion-note>
-    </ion-item>
   </ion-list>
   <div padding>
     <button ion-button block color="danger" (click)="logout()">注销</button>
