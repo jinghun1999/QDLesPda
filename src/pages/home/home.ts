@@ -6,8 +6,7 @@ import {
   ModalController,
   NavController,
   ToastController,
-  Platform,
-  ActionSheetController
+  Platform
 } from "ionic-angular";
 import { Storage } from "@ionic/storage";
 import { Api, Menus, User } from "../../providers";
@@ -51,13 +50,13 @@ export class HomePage extends BaseUI {
   ionViewDidLoad() {
     this.doUpData();
     this.getMenus();
-  }
-  ionViewDidEnter() {
     this.getWorkshop();
   }
+  // ionViewDidEnter() {
+  //   this.getWorkshop();
+  // }
   getWorkshop = () => {
     this.storage.get("workshop").then((res) => {
-
       if (res === '') { //仓库为空
         //
       }

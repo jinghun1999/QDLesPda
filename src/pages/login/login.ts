@@ -48,12 +48,12 @@ export class LoginPage extends BaseUI {
       {
         id: 3,
         text: "厂外使用",
-        value: 'http://192.168.2.163:49280'
+        value: 'http://192.168.4.163:49280'
       },
       {
         id: 4,
         text: "厂内使用",
-        value: 'http://172.168.0.1:49280'
+        value: 'http://172.168.8.1:49280'
       }
     ];
     this.api.api_host ? null :this.api.api_host= this.environment[1].value;

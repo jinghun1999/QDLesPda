@@ -20,7 +20,7 @@ import { Storage } from "@ionic/storage";
 })
 export class InventoryPage extends BaseUI {
   @ViewChild(Searchbar) searchbar: Searchbar;
-  store_area: string = ''; //存储区
+  workshop: string = ''; //存储区
   label: string = '';
   org: any;
   data: any = {
@@ -48,11 +48,11 @@ export class InventoryPage extends BaseUI {
       this.searchSheet();
       this.searchbar.setFocus();
     });
-    this.storage.get('store_area').then(res => {
-      if (res) {
-        this.store_area = res;//JSON.parse(res);
-      }
-    }).catch(e => console.error(e.toString()));
+    // this.storage.get('workshop').then(res => {
+    //   if (res) {
+    //     this.workshop = res;//JSON.parse(res);        
+    //   }
+    // }).catch(e => console.error(e.toString()));
   }
 
   searchSheet() {
@@ -60,13 +60,9 @@ export class InventoryPage extends BaseUI {
     if (this.org && this.org.code) {
       this.api.get('inventory/getScanCode', { code: this.org.code }).subscribe((res: any) => {
         loading.dismissAll();
-        //debugger;
         if (res.successful) {
           this.data = res.data;
-          //this.current_part_index = 0;
           this.part_total = this.data.parts.length;
-          //debugger;
-          //this.current_part = this.data.parts[this.current_part_index];
         } else {
           super.showToast(this.toastCtrl, res.message, 'error');
         }
@@ -79,7 +75,7 @@ export class InventoryPage extends BaseUI {
 
   searchPart() {
     let err = '';
-    if (this.label.length != 24) {
+    if (this.label.length != 26) {
       err = '请扫描正确的零件箱标签';
     } else {
       let prefix = this.label.substr(0, 2).toUpperCase();
@@ -97,14 +93,11 @@ export class InventoryPage extends BaseUI {
     let part_num = this.label.substr(11, 8).replace(/(^0*)/, '');
     let std_qty = parseInt(this.label.substr(19, 5));
 
-
     this.current_part_index = this.data.parts.findIndex(p => p.part_no === part_num && p.supplier_id === supplier_num);
 
     if (this.current_part_index >= 0) {
-
       this.data.parts[this.current_part_index].real_qty += (std_qty ? std_qty : 1);
       this.resetScan();
-
     } else {
       const prompt = this.alertCtrl.create({
         title: '零件不存在',
