@@ -30,7 +30,7 @@ export class MyApp extends BaseUI {
     platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-      if (window.localStorage.getItem('TOKEN')) {
+      if (window.localStorage.getItem('qd_env')&&window.localStorage.getItem('TOKEN')) {
         this.rootPage = HomePage;
       } else {
         this.rootPage = LoginPage;
