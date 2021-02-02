@@ -37,12 +37,12 @@ export class LoginPage extends BaseUI {
     this.environment = [
       {
         id: 1,
-        text: "青岛测试环境",
+        text: "青岛测试服务器",
         value: 'http://10.40.248.192/lesapi'
       },
       {
         id: 2,
-        text: "河西测试环境",
+        text: "河西测试服务器",
         value: 'http://10.1.126.171/qdapi'
       },
       {
