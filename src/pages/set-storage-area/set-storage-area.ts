@@ -41,7 +41,10 @@ export class SetStorageAreaPage extends BaseUI {
     this.storage.get('workshop_shoose').then(res => {
       if (res === '') { //仓库为空
         //
-      } else if (res) {
+      } else if (!res) { //仓库不为空，存储区为空
+        //console.log(res);
+      }
+      else {
         this.workshop_choose = res;
       }
     }).catch(e => console.error(e.toString()));

@@ -37,8 +37,8 @@ export class LoginPage extends BaseUI {
     this.environment = [
       {
         id: 1,
-        text: "开发环境",
-        value: 'http://localhost:49280'
+        text: "生产环境",
+        value: 'http://10.40.248.192/lesapi'
       },
       {
         id: 2,
@@ -47,16 +47,11 @@ export class LoginPage extends BaseUI {
       },
       {
         id: 3,
-        text: "厂外使用",
-        value: 'http://192.168.4.163:49280'
-      },
-      {
-        id: 4,
-        text: "厂内使用",
-        value: 'http://172.168.8.1:49280'
+        text: "开发环境",
+        value: 'http://localhost:49280'
       }
     ];
-    this.api.api_host ? null :this.api.api_host= this.environment[1].value;
+    this.api.api_host ? null :this.api.api_host= this.environment[0].value;
   }
   
   doLogin() {
