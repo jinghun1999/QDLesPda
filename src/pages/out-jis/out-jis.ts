@@ -20,12 +20,14 @@ import {fromEvent} from "rxjs/observable/fromEvent";
 export class OutJisPage extends BaseUI {
   @ViewChild(Searchbar) searchbar: Searchbar;
   fetching: boolean = false;
-  label: string = '';                      //记录扫描编号
-  workshop_list: any[] = [];
+  label: string = '';
+  list_wm: any[] = [];
+  list_shop: any[] = [];
   item: any = {
     plant: '',                            //工厂
     workshop: '',                         //车间
-    target: '',                           //去向车间
+    targetWM: '',
+    targetShop: '',                       //去向车间
     parts: [],                            //出库零件列表
   };
   keyPressed: any;
@@ -56,8 +58,8 @@ export class OutJisPage extends BaseUI {
   ionViewDidEnter() {
     setTimeout(() => {
       this.addkey();
-      this.searchbar.setFocus();
     });
+    this.setFocus();
   }
   ionViewWillUnload() {
     this.removekey();
@@ -76,8 +78,11 @@ export class OutJisPage extends BaseUI {
     });
   }
   ionViewDidLoad() {
-    this.storage.get('WORKSHOP').then((val) => {
-      this.item.plant = this.api.plant;
+    this.item.plant = this.api.plant;
+    this.storage.get('warehouse').then((val) => {
+      this.item.warehouse = val;
+    });
+    this.storage.get('workshop').then((val) => {
       this.item.workshop = val;
       this.getWorkshops();
     });
@@ -86,8 +91,7 @@ export class OutJisPage extends BaseUI {
   private getWorkshops() {
     this.api.get('system/getPlants', {plant: this.api.plant, type: 0}).subscribe((res: any) => {
       if (res.successful) {
-        this.workshop_list = res.data;
-        this.item.target = this.workshop_list[0].value;
+        this.list_wm = res.data;
       } else {
         this.insertError(res.message);
       }
@@ -98,7 +102,14 @@ export class OutJisPage extends BaseUI {
       this.setFocus();
     });
   }
-
+  targetChange() {
+    const l = this.list_wm.find(p => p.value === this.item.targetWM);
+    this.list_shop = l.children;
+  }
+  reSel(){
+    this.item.targetShop = '';
+    this.item.targetWM = '';
+  }
   //扫箱
   scanBox() {
     if (!this.label 
@@ -141,8 +152,10 @@ export class OutJisPage extends BaseUI {
     }
 
     // 不存在的零件，查询出零件信息，再push到list中
+    this.insertError('正在获取扫描数据，请稍后...', 'i');
     this.api.get('wm/getPartByLN', {
       plant: this.item.plant,
+      warehouse: this.item.warehouse,
       workshop: this.item.workshop,
       ln: this.label
     }).subscribe((res: any) => {
@@ -165,18 +178,15 @@ export class OutJisPage extends BaseUI {
               require_parts: prefix === 'BP' ? 1 : (pts[0].pack_std_qty > pts[0].parts ? pts[0].parts : pts[0].pack_std_qty),
               label: pts[0].label,
             });
-
-            if(res.message){
-              //包装数不一致的提示信息
+            if(res.message) {
               this.insertError(res.message, 'i');
             }
             this.setFocus();
+            this.insertError('已扫描完成', 's');
           }
         } else {
-          //super.showToast(this.toastCtrl, res.message, 'error');
           this.insertError(res.message);
         }
-        //loading.dismiss();
         this.setFocus();
       },
       (error) => {
@@ -227,10 +237,10 @@ export class OutJisPage extends BaseUI {
       return;
     }
     let err = '';
-    if(!this.item.target){
-      err = '请先选择目标车间';
-      this.insertError(err);
-    }
+    // if(!this.item.targetShop || !this.item.targetWM){
+    //   err = '请先选择目标';
+    //   this.insertError(err);
+    // }
     if (!this.item.parts.length) {
       err = '请添加出库的零件';
       this.insertError(err);
@@ -272,9 +282,10 @@ export class OutJisPage extends BaseUI {
   }
 
   setFocus() {
-    this.label = '';
+    let t = this;
+    t.label = '';
     setTimeout(() => {
-      this.searchbar.setFocus();
+      t.searchbar && t.searchbar.setFocus();
     }, 200);
   }
   focusInput = () => { this.searchbar.setElementClass('bg-red', false); this.searchbar.setElementClass('bg-green', true); }

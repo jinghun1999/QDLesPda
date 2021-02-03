@@ -2,21 +2,28 @@
   <ion-navbar color="primary">
     <ion-title>JIS出库</ion-title>
     <ion-buttons end>
-      <button ion-button color="light">源仓库:{{item.workshop}}</button>
+      <button ion-button color="light">源车间:{{item.workshop}}</button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
-  <form (submit)="scanBox()" *ngIf="item.target">
+  <form (submit)="scanBox()">
     <ion-searchbar #searchbar placeholder="扫描包装标签" [(ngModel)]="label" name="scan" (ionFocus)="focusInput()" (ionBlur)="blurInput()"></ion-searchbar>
   </form>
   <ion-list>
-    <ion-item>
-      <ion-label color="primary">去向车间</ion-label>
-      <ion-select [(ngModel)]="item.target" interface="popover" okText="选择" cancelText="取消" placeholder="请选择">
-        <ion-option *ngFor="let t of workshop_list" value="{{t.value}}">{{t.text}}</ion-option>
+    <ion-item *ngIf="!item.targetWM">
+      <ion-label color="primary">去向仓库</ion-label>
+      <ion-select [(ngModel)]="item.targetWM" interface="popover" okText="选择" cancelText="取消" placeholder="请选择" (ngModelChange)="targetChange()">
+        <ion-option *ngFor="let t of list_wm" value="{{t.value}}">{{t.text}}</ion-option>
       </ion-select>
+    </ion-item>
+    <ion-item *ngIf="item.targetWM">
+      <ion-label color="primary">去向车间</ion-label>
+      <ion-select [(ngModel)]="item.targetShop" interface="popover" okText="选择" cancelText="取消" placeholder="请选择">
+        <ion-option *ngFor="let t of list_shop" value="{{t.value}}">{{t.text}}</ion-option>
+      </ion-select>
+      <button item-end ion-button color="danger" (click)="reSel()">重选</button>
     </ion-item>
   </ion-list>
   <div>
