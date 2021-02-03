@@ -61,7 +61,7 @@ export class SetProfilePage extends BaseUI {
 
     this.data.warehouse = this.warehouse;
     this.storage.set('warehouse', this.warehouse).then((res) => {
-      this.viewCtrl.dismiss(this.data);
+      //this.viewCtrl.dismiss(this.data);
     }).catch(() => { });
 
     const workshops = this.list.find((f) => f.value == this.warehouse);
@@ -74,7 +74,7 @@ export class SetProfilePage extends BaseUI {
     this.storage.set('workshop_shoose', this.workshop_shoose).then((res) => {
     }).catch(() => { });
     this.data.workshop_shoose = this.workshop_shoose;
-    this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss(this.data);
   }
   cancel() {
     this.viewCtrl.dismiss();
