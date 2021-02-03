@@ -2,24 +2,23 @@
   <ion-navbar color="primary">
     <ion-title>JIS校验</ion-title>
   </ion-navbar>
-  <form (submit)="scan()">
-    <ion-searchbar #searchbar placeholder="{{barTextHolderText}}" [(ngModel)]="label" name="label"
-      (ionFocus)="focusInput()" (ionBlur)="blurInput()">
-    </ion-searchbar>
+  <form (submit)="scan()" >
+    <ion-searchbar #searchbar placeholder="{{barTextHolderText}}" [(ngModel)]="label" name="label" (ionFocus)="focusInput()" (ionBlur)="blurInput()"></ion-searchbar>
   </form>
 </ion-header>
+
 <ion-content [ngStyle]="{'opacity':show?'0.4':'1'}" >
-  <table style="white-space : nowrap;width: 100%;" border="1">
+  <table border="1px outset #000000;">
     <tr>
-      <td style="font-weight:bold;">JIS单号</td>
-      <td colspan="3">{{item.jis_no}}</td>
+      <td style="border-left: 1px solid  #ffffff;"><strong>JIS单号</strong></td>
+      <td colspan="3" style="border-right: 1px solid #ffffff;">{{item.jis_no}}</td>
     </tr>
     <tr>
-      <td>料箱代码:&emsp;{{item.rack}}</td>
+      <td style="border-left: 1px solid #ffffff">料箱代码:&emsp;{{item.rack}}</td>
       <td>排序类型:&emsp;{{item.rack_name}}</td>
-      <td>日计第{{item.sheet_c}}单</td>
+      <td style="border-right: 1px solid #ffffff">日计第{{item.sheet_c}}单</td>
     </tr>
-  </table> 
+  </table>
   <div class="ds-box" *ngFor="let part of item.parts;let i=index" [ngStyle]="{'background-color': part.san_ing?'#ff9999': part.saned ? '#b3ffb3':''}">
     <ion-row >
       <ion-col>VSN:{{part.vsn}}&emsp;<span>{{part.color}}</span>&emsp;序号:{{i+1}}<br>CSN:{{part.csn}}&emsp;吊架号:{{part.car_seq}}&emsp;<span >{{part.part_no}}</span>&emsp;数量:{{part.qty}}

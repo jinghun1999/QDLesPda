@@ -264,14 +264,8 @@ export class CheckJisPage extends BaseUI {
     this.scanOrder = 0;
     this.item.parts.length = 0;
   }
-  focusInput = () => {
-    this.searchbar.setElementClass('bgred', false);
-    this.searchbar.setElementClass('bggreen', true);
-  };
-  blurInput = () => {
-    this.searchbar.setElementClass('bggreen', false);
-    this.searchbar.setElementClass('bgred', true);
-  };
+  focusInput = () => { this.searchbar.setElementClass('bg-red', false); this.searchbar.setElementClass('bg-green', true); }
+  blurInput = () => { this.searchbar.setElementClass('bg-green', false); this.searchbar.setElementClass('bg-red', true); }
 
   setReset() {
     this.label = '';

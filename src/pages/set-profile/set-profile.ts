@@ -31,21 +31,19 @@ export class SetProfilePage extends BaseUI {
   ionViewDidLoad() {
     this.plant = this.api.plant;
     let loading = super.showLoading(this.loadingCtrl, "正在加载数据...");
-    setTimeout(() => {
-      this.api.get('system/getPlants', { plant: this.plant, type: -1 }).subscribe((res: any) => {
+    this.api.get('system/getPlants', { plant: this.plant, type: -1 }).subscribe((res: any) => {
+      loading.dismiss();
+      if (res.successful) {
+        this.list = res.data;
+        this.warehouse_choose = res.data;
+      } else {
+        super.showToast(this.toastCtrl, res.message);
+      }
+    },
+      err => {
         loading.dismiss();
-        if (res.successful) {
-          this.list = res.data;
-          this.warehouse_choose = res.data;
-        } else {
-          super.showToast(this.toastCtrl, res.message);
-        }
-      },
-        err => {
-          loading.dismiss();
-          alert(JSON.stringify(err))
-        });
-    });
+        alert(JSON.stringify(err))
+      });
   }
   ionViewDidEnter() {
     this.storage.get('warehouse').then(val => {
@@ -76,6 +74,7 @@ export class SetProfilePage extends BaseUI {
     this.storage.set('workshop_shoose', this.workshop_shoose).then((res) => {
     }).catch(() => { });
     this.data.workshop_shoose = this.workshop_shoose;
+    this.viewCtrl.dismiss();
   }
   cancel() {
     this.viewCtrl.dismiss();

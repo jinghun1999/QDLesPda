@@ -52,9 +52,6 @@ export class HomePage extends BaseUI {
     this.getMenus();
     this.getWorkshop();
   }
-  // ionViewDidEnter() {
-  //   this.getWorkshop();
-  // }
   getWorkshop = () => {
     this.storage.get("workshop").then((res) => {
       if (res === '') { //仓库为空
