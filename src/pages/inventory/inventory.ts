@@ -96,7 +96,7 @@ export class InventoryPage extends BaseUI {
     this.current_part_index = this.data.parts.findIndex(p => p.part_no === part_num && p.supplier_id === supplier_num);
 
     if (this.current_part_index >= 0) {
-      this.data.parts[this.current_part_index].real_qty += (std_qty ? std_qty : 1);
+      this.data.parts[this.current_part_index].real_qty = parseInt(this.data.parts[this.current_part_index].real_qty) + (std_qty ? std_qty : 1);
       this.resetScan();
     } else {
       const prompt = this.alertCtrl.create({
