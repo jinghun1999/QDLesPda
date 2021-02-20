@@ -105,7 +105,7 @@ export class HomePage extends BaseUI {
               version: res.data.version,
               url: res.data.url
             };
-            //t.navCtrl.push("UpgradePage", { data: t.data });//跳转到升级页面
+            //跳转到升级页面
             t.app.getRootNav().setRoot(
               "UpgradePage", { data: dt },
               {

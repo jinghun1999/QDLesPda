@@ -30,7 +30,7 @@ export class CheckJisPage extends BaseUI {
   isEnd: boolean = false;
   workshop: string = '';
   warehouse: string = '';
-  scanOrder: number = 0;
+  scanOrder: number = 0; //扫描的个数
   show: boolean = false;
   item: any = {
     jis_no: '',
@@ -115,7 +115,7 @@ export class CheckJisPage extends BaseUI {
           this.item.rack = res.data.rack;
           this.item.rack_name = res.data.rack_name;
           this.item.sheet_c = res.data.sheet_c;
-          this.item.parts = res.data.parts;
+          this.item.parts =  res.data.parts;
           //扫描零件之前，判断开头的是否为空白车
           for (let i = 0; i < this.item.parts.length; i++) {
             if (this.item.parts[i].part_no == '') {
@@ -125,6 +125,11 @@ export class CheckJisPage extends BaseUI {
             else {
               break;
             }
+          }
+          //当前jis单为空白单
+          if (this.scanOrder == this.item.parts.length) {
+            this.isEmptyOrder();
+            return;
           }
           this.item.parts[this.scanOrder].san_ing = true;//下一个要扫描的零件
         }
@@ -170,16 +175,10 @@ export class CheckJisPage extends BaseUI {
         this.insertError('匹配成功');
       };
 
-      part.saned = true; //标记为已扫描      
+      part.saned = true; //标记为已扫描
+      part.san_ing = false; 
       part.scanDate = this.getDate(new Date());
       this.scanOrder++;
-      //下一个要扫描零件
-      if (this.scanOrder < this.item.parts.length) {
-        for (let i = this.scanOrder; i >= 0; i--) {
-          this.item.parts[i].san_ing = false;
-        }
-        this.item.parts[this.scanOrder].san_ing = true;
-      }
 
       //判断当前零件后面的是否为空白车,是的话直接跳过
       for (let i = this.scanOrder; i < this.item.parts.length; i++) {
@@ -191,32 +190,31 @@ export class CheckJisPage extends BaseUI {
           break;
         }
       }
+
+      //下一个要扫描零件
+      if (this.scanOrder < this.item.parts.length) {
+        for (let i = this.scanOrder; i >= 0; i--) {
+          this.item.parts[i].san_ing = false;
+        }
+        this.item.parts[this.scanOrder].san_ing = true;
+      }
+
       //扫描完毕
       if (this.scanOrder == this.item.parts.length) {
-        this.item.parts[this.item.parts.length - 1].san_ing = false;
         let alert = this.alertCtrl.create({
           title: '提示信息',
           subTitle: '校验完成',
           buttons: [{
             text: '确定',
             handler: () => {
-              //更新
-              this.api.post('wm/postJisScaned/' + this.item.jis_no, {}).subscribe((res: any) => {
-                if (res.successful) {
-                  this.insertError('已更新', 's');
-                  this.reset();
-                }
-                else {
-                  this.insertError(res.message);
-                  return;
-                }
-              });
+              //this.upJIS(this.item.jis_no);
             }
           }]
         })
-        alert.present();
+        alert.present().then(res => { 
+          this.upJIS(this.item.jis_no);
+        });
       }
-      this.setReset();
     }
     this.setReset();
   }
@@ -270,5 +268,119 @@ export class CheckJisPage extends BaseUI {
   setReset() {
     this.label = '';
     this.searchbar.setFocus();
+  }
+  //是否为空白单据
+  isEmptyOrder() { 
+    let alert = this.alertCtrl.create({
+      title: '提示信息',
+      subTitle: '此单是空白单！',
+      buttons: [{
+        text: '确定',
+        handler: () => {
+          //更新
+          this.api.post('wm/postJisScaned/' + this.item.jis_no, {}).subscribe((res: any) => {
+            if (res.successful) {
+              this.insertError('已更新', 's');
+              this.reset();
+            }
+            else {
+              this.insertError(res.message);
+              return;
+            }
+          });
+          this.reset();
+        }
+      }]
+    })
+    alert.present();
+  }
+  getDataList() { 
+    return  [
+      {
+      "csn": "BGA000000019",
+      "vsn": "GPY9CT5A5GA0000",
+      "vin": "LZWCABGA2ME010023",
+      "qty": 1,
+      "seq": 143,
+      "color": "晴空银",
+      "car_seq": 26,
+      "part_no": "",
+      "supplier": "RDC1",
+      "saned": false
+      },
+      {
+      "csn": "BGA000000020",
+      "vsn": "GPY9CT5A5GA0000",
+      "vin": "LZWCABGA4ME010024",
+      "qty": null,
+      "seq": 144,
+      "color": "晴空银",
+      "car_seq": 27,
+      "part_no": "23750441",
+      "supplier": "RDC1",
+      "saned": false
+      },
+      {
+      "csn": "BGA000000021",
+      "vsn": "1TCNSM5A50A0000",
+      "vin": "LZWCBAGA6ME200060",
+      "qty": 1,
+      "seq": 204,
+      "color": "晴空银",
+      "car_seq": 28,
+      "part_no": "",
+      "supplier": "RDC1",
+      "saned": false
+      },
+      {
+      "csn": "BGA000000022",
+      "vsn": "1TCNSM5A50A0000",
+      "vin": "LZWCBAGA8ME200061",
+      "qty": 1,
+      "seq": 205,
+      "color": "晴空银",
+      "car_seq": 29,
+      "part_no": "23750441",
+      "supplier": "RDC1",
+      "saned": false
+      },
+      {
+      "csn": "BGA000000023",
+      "vsn": "1TCNSM5A50A0000",
+      "vin": "LZWCBAGAXME200062",
+      "qty": 1,
+      "seq": 206,
+      "color": "晴空银",
+      "car_seq": 30,
+      "part_no": "",
+      "supplier": "RDC1",
+      "saned": false
+      },
+      {
+      "csn": "BGA000000024",
+      "vsn": "1TCNSM5A50A0000",
+      "vin": "LZWCBAGA1ME200063",
+      "qty": 1,
+      "seq": 207,
+      "color": "晴空银",
+      "car_seq": 31,
+      "part_no": "23750441",
+      "supplier": "RDC1",
+      "saned": false
+      }
+    ]
+  }
+  upJIS(jis_no) { 
+    //更新
+    this.api.post('wm/postJisScaned/' + jis_no, {}).subscribe((res: any) => {
+      if (res.successful) {
+        this.insertError('已更新', 's');
+        this.reset();
+      }
+      else {
+        this.insertError(res.message);
+        return;
+      }
+    });
   }
 }
