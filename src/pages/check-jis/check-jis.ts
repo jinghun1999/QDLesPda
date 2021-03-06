@@ -269,7 +269,7 @@ export class CheckJisPage extends BaseUI {
     this.label = '';
     this.searchbar.setFocus();
   }
-  //是否为空白单据
+  //空白单据
   isEmptyOrder() { 
     let alert = this.alertCtrl.create({
       title: '提示信息',
@@ -294,84 +294,8 @@ export class CheckJisPage extends BaseUI {
     })
     alert.present();
   }
-  getDataList() { 
-    return  [
-      {
-      "csn": "BGA000000019",
-      "vsn": "GPY9CT5A5GA0000",
-      "vin": "LZWCABGA2ME010023",
-      "qty": 1,
-      "seq": 143,
-      "color": "晴空银",
-      "car_seq": 26,
-      "part_no": "",
-      "supplier": "RDC1",
-      "saned": false
-      },
-      {
-      "csn": "BGA000000020",
-      "vsn": "GPY9CT5A5GA0000",
-      "vin": "LZWCABGA4ME010024",
-      "qty": null,
-      "seq": 144,
-      "color": "晴空银",
-      "car_seq": 27,
-      "part_no": "23750441",
-      "supplier": "RDC1",
-      "saned": false
-      },
-      {
-      "csn": "BGA000000021",
-      "vsn": "1TCNSM5A50A0000",
-      "vin": "LZWCBAGA6ME200060",
-      "qty": 1,
-      "seq": 204,
-      "color": "晴空银",
-      "car_seq": 28,
-      "part_no": "",
-      "supplier": "RDC1",
-      "saned": false
-      },
-      {
-      "csn": "BGA000000022",
-      "vsn": "1TCNSM5A50A0000",
-      "vin": "LZWCBAGA8ME200061",
-      "qty": 1,
-      "seq": 205,
-      "color": "晴空银",
-      "car_seq": 29,
-      "part_no": "23750441",
-      "supplier": "RDC1",
-      "saned": false
-      },
-      {
-      "csn": "BGA000000023",
-      "vsn": "1TCNSM5A50A0000",
-      "vin": "LZWCBAGAXME200062",
-      "qty": 1,
-      "seq": 206,
-      "color": "晴空银",
-      "car_seq": 30,
-      "part_no": "",
-      "supplier": "RDC1",
-      "saned": false
-      },
-      {
-      "csn": "BGA000000024",
-      "vsn": "1TCNSM5A50A0000",
-      "vin": "LZWCBAGA1ME200063",
-      "qty": 1,
-      "seq": 207,
-      "color": "晴空银",
-      "car_seq": 31,
-      "part_no": "23750441",
-      "supplier": "RDC1",
-      "saned": false
-      }
-    ]
-  }
+  //检验完成，更新jis单据
   upJIS(jis_no) { 
-    //更新
     this.api.post('wm/postJisScaned/' + jis_no, {}).subscribe((res: any) => {
       if (res.successful) {
         this.insertError('已更新', 's');

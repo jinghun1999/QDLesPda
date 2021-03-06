@@ -42,7 +42,7 @@ export class SetProfilePage extends BaseUI {
     },
       err => {
         loading.dismiss();
-        alert(JSON.stringify(err))
+        alert("加载失败")
       });
   }
   ionViewDidEnter() {

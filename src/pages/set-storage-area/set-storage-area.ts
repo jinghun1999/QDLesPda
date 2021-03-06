@@ -38,7 +38,8 @@ export class SetStorageAreaPage extends BaseUI {
       this.warehouse = val;
     });
     let loading = super.showLoading(this.loadingCtrl, "正在加载数据...");
-    this.storage.get('workshop_shoose').then(res => {
+      this.storage.get('workshop_shoose').then(res => {
+      loading.dismiss();
       if (res === '') { //仓库为空
         //
       } else if (!res) { //仓库不为空，存储区为空
@@ -48,7 +49,7 @@ export class SetStorageAreaPage extends BaseUI {
         this.workshop_choose = res;
       }
     }).catch(e => console.error(e.toString()));
-    loading.dismiss();
+    
   }
   ionViewDidEnter(){
     this.storage.get('workshop').then(val => { 

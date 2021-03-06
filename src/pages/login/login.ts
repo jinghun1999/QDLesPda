@@ -48,7 +48,7 @@ export class LoginPage extends BaseUI {
       {
         id: 3,
         text: "开发环境",
-        value: 'http://localhost:49280'
+        value: 'http://127.0.0.1:49280'
       }
     ];
     this.api.api_host ? null :this.api.api_host= this.environment[0].value;

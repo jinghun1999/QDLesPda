@@ -25,11 +25,17 @@ export class Api {
 
     if (params) {
       reqOpts.params = new HttpParams();
-      for (let k in params) {
+        for (let k in params) {
         reqOpts.params = reqOpts.params.set(k, params[k]);
       }
-    }
-    return this.http.get(this.api_host+'/api' + '/' + endpoint, reqOpts);
+      }
+      //设置<login>登录和<home>页面获取菜单的请求超时为2分钟
+    if (endpoint == 'account/login' || endpoint == 'system/getMenus') {
+        return this.http.get(this.api_host + '/api' + '/' + endpoint, reqOpts).pipe(timeout(120000));
+      }
+      else { 
+        return this.http.get(this.api_host + '/api' + '/' + endpoint, reqOpts);
+      }
   }
 
   post(endpoint: string, body: any, reqOpts?: any) {

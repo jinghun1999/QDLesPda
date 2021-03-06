@@ -78,6 +78,19 @@ export class HomePage extends BaseUI {
   }
   goSetting() {
     this.navCtrl.push("SettingsPage", {});
+    }
+    //请求超时，跳转到登录页
+  goLoginPage() { 
+    window.localStorage.removeItem('TOKEN');
+    this.storage.clear();
+    this.navCtrl.push("LoginPage", {});
+    this.app.getRootNav().setRoot(
+      "LoginPage", {},
+      {
+        animate: true,
+        direction: "forward",
+      }
+    );
   }
   getMenus() {
     let loading = super.showLoading(this.loadingCtrl, "加载中...");
@@ -89,8 +102,17 @@ export class HomePage extends BaseUI {
         super.showToast(this.toastCtrl, res.message, "error");
       }
     }, (err) => {
-      loading.dismiss();
-      super.showToast(this.toastCtrl, "系统错误", "error");
+    loading.dismiss();
+    let errMsg = '';
+    if (err instanceof TimeoutError) {
+      errMsg = '服务器连接超时';
+    } else if (err instanceof HttpErrorResponse) {
+      errMsg = '网络连接异常';
+    } else {
+      errMsg = '未知原因，请求失败';
+    }
+    this.goLoginPage();
+    super.showToast(this.toastCtrl, errMsg, "error");
     });
   }
   doUpData() {
