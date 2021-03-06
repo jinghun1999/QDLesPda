@@ -2,6 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AlertController, Events, ToastController } from 'ionic-angular';
 import { Storage } from "@ionic/storage";
+import { timeout } from 'rxjs/operators';
+
 
 
 /**

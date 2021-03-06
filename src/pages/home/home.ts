@@ -12,6 +12,10 @@ import { Storage } from "@ionic/storage";
 import { Api, Menus, User } from "../../providers";
 import { BaseUI } from "../";
 import { AppVersion } from '@ionic-native/app-version';
+import { TimeoutError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+
+
 
 @IonicPage()
 @Component({
